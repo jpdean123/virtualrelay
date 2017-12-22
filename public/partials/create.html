@@ -1,0 +1,88 @@
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+<div class="panel panel-default">
+					<div class="panel-heading">Create a New Event!</div>
+					<div class="panel-body">
+						<div class="col-md-12">
+							<form role="form">
+								<div class="form-group">
+									<label>Name Your Event</label>
+									<input class="form-control" placeholder="Placeholder" ng-model="newEvent.title">
+								</div>
+								<div class="form-group">
+									<label>Give it a short description</label>
+									<input class="form-control" placeholder="Placeholder" ng-model="newEvent.description">
+								</div>
+							
+					
+					
+								<div class="form-group">
+									<label>What Length Do You Want?</label>
+									<div class="radio">
+										<label>
+											<input type="radio" name="optionsRadios" id="optionsRadios1" value="3" ng-model="newEvent.days">Weekend (3 Days)
+										</label>
+									</div>
+									<div class="radio">
+										<label>
+											<input type="radio" name="optionsRadios" id="optionsRadios2" value="7" ng-model="newEvent.days">1 Week
+										</label>
+									</div>
+									<div class="radio">
+										<label>
+											<input type="radio" name="optionsRadios" id="optionsRadios3" value="30" ng-model="newEvent.days">1 Month
+										</label>
+									</div>
+									<div class="radio">
+										<label>
+											<input type="radio" name="optionsRadios" id="optionsRadios3" value="365" ng-model="newEvent.days">1 Year
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label>How many people do you want?</label>
+									<i>Don't worry, you can change this later.</i>
+									<input class="form-control" placeholder="Placeholder" ng-model="newEvent.people_count">
+								</div>
+
+					<div>
+						Distance in Map: {{newEvent.distance | number: 2}} <br>
+						Number of People: {{newEvent.people_count}} <br>
+						Miles per person per day: {{newEvent.distance / newEvent.people_count / newEvent.days | number:2 || 'Create a route and add people'}}<br>
+					</div>
+					<div>
+						<a ng-click="undo()">Undo</a>
+					</div>
+
+<!-- interactive google maps path maker -->
+							<ui-gmap-google-map center="map.center" zoom="map.zoom" events="map.events" draggable="true" options="options" bounds="map.bounds" class="map-creator">
+       							<ui-gmap-markers models="markers" coords="'coords'" icon="'icon'">
+					            </ui-gmap-markers>
+					             <ui-gmap-polyline ng-repeat="p in polylines" 
+					            path="p.path" 
+					            stroke="p.stroke" 
+					            visible='p.visible'
+					            geodesic='p.geodesic' 
+					            fit="false" 
+					            editable="p.editable" 
+					            draggable="p.draggable" 
+					            icons='p.icons'>
+					                    
+					            </ui-gmap-polyline>
+    						</ui-gmap-google-map>
+					
+						<button type="submit" class="btn btn-primary">Create Event</button>
+					
+								</div>
+							</form>
+						</div>
+					</div>
+
+					<pre>{{encodedPath | json: 2}}</pre>
+				</div><!-- /.panel-->
+
+			</div>
+
+
+
+
+

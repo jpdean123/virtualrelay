@@ -30,7 +30,6 @@ app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvid
     .when("/faq", {templateUrl: "partials/faq.html", controller: "PageCtrl"})
     .when("/pricing", {templateUrl: "partials/pricing.html", controller: "PageCtrl"})
     .when("/eventslist", {templateUrl: "partials/events_list.html", controller: "EventsListCtrl"})
-    .when("/event/:eventid", {templateUrl: "partials/event.html", controller: "EventCtrl"})
     .when("/map", {templateUrl: "partials/map.html", controller: "MapCtrl"})
     // Blog
     .when("/blog", {templateUrl: "partials/blog.html", controller: "BlogCtrl"})
@@ -39,13 +38,17 @@ app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvid
     .when("/signup", {templateUrl: "partials/signup.html", controller: "SignUpCtrl"})
     .when("/dashboard", {templateUrl: "partials/dashboard.html", controller: "DashCtrl"})
     .when("/token_exchange", {templateUrl: "partials/token.html", controller: "TokenCtrl"})
-    // else 404
-    .otherwise("/404", {templateUrl: "partials/404.html", controller: "PageCtrl"});
+    .when("/event/:eventid", {templateUrl: "partials/event.html", controller: "EventCtrl"})
+    .when("/create", {templateUrl: "partials/create.html", controller: "CreateCtrl"})
+    // else go to signup / login page... this app will act as the app. with a public Wordpress page to match
+    // maybe we can use Bitly API to create short links to the specific events so they don't see the firebase URL
+    // do that on event creation and then save it to the event for later
+    .otherwise("/signup");
 
     uiGmapGoogleMapApiProvider.configure({
         key: 'AIzaSyDUEvmx4SYccJerkf5e8mUEE7zEMWfiM1M',
         v: '3.20', //defaults to latest 3.X anyhow
-        libraries: 'weather,geometry,visualization,places'
+        libraries: 'weather,drawing,geometry,visualization,places,directions'
     });
 });
 
@@ -122,8 +125,14 @@ app.service('UserService', function ($firebaseAuth, $location, $rootScope){
     currentUser.loggedIn = false;
     currentUser.email = "";
     currentUser.uid = "";
-    $location.path('/signup');
-    $rootScope.$apply();
+    var pathUrl = $location.path();
+    var substring = 'public/';
+    var publicCheck = pathUrl.indexOf(substring);
+    if (publicCheck ==-1) {
+      $location.path('/signup');
+      $rootScope.$apply();
+    }
+    
   }
 });
 
@@ -358,9 +367,11 @@ $scope.saveEvents = function () {
 
 
 
-app.controller('TokenCtrl', function ($scope, $location, $http, $routeParams, $firebaseAuth, UserService) {
+app.controller('TokenCtrl', function ($scope, $location, $http, $routeParams, $firebaseAuth, UserService, $firebaseObject) {
   console.log("Token Controller reporting for duty.");
 
+   var fire = firebase.database();
+  
 
   var token = $routeParams.code;
   var currentUser = UserService.getCurrentUser();
@@ -455,6 +466,8 @@ promise.catch(function(e) {
     $scope.authObj.$createUserWithEmailAndPassword(email, password)
     .then(function(firebaseUser) {
       console.log("User " + firebaseUser.uid + " created successfully!");
+      $location.path('/dashboard');
+      $scope.$apply();
     }).catch(function(error) {
       console.error("Error: ", error);
     });
@@ -989,3 +1002,170 @@ uiGmapGoogleMapApi.then(function(maps) {
 
 
 }); // end event controller
+
+
+app.controller("CreateCtrl",
+  function($scope, $q, $location, $http, $firebaseObject, $routeParams, $firebaseArray, UserService, uiGmapGoogleMapApi, CalculatorService, $timeout, StravaService) {
+
+// scope variable for the form 
+
+$scope.newEvent = {
+  title: "",
+  description: "",
+  distance: 0,
+  people_count: 0,
+  path: ""
+}
+
+    // basic steps
+          // form in the view for some data
+          // render a map to create path variable
+          // search for users to add athletes & or add email addresses
+
+
+
+
+  // google maps stuff
+  $scope.markers = [];
+  //push only first and last marker to the map
+  //apend existing polyline with total polyline
+
+  $scope.pointsArray = [];
+  $scope.polylines = [{
+                      id: 1,
+                      path: "",
+                      stroke: {
+                          color: '#6060FB',
+                          weight: 4 
+                      },
+                      editable: false,
+                      draggable: false,
+                      geodesic: false,
+                      visible: $scope.visible,
+                      static: true
+                  }];
+
+     $scope.map = {
+      center: {
+        latitude: 42.324666380272916,
+        longitude: -83.60940366983414
+      },
+      zoom: 4,
+      bounds: {},
+      events: {
+        click: function(mapModel, eventName, originalEventArgs) {
+            
+              processEventData(mapModel, eventName, originalEventArgs);
+            
+             
+             }
+             
+        }
+       } // end $scope.map
+    $scope.options = {
+      scrollwheel: false
+    };
+
+
+processEventData = function(mapModel, eventName, originalEventArgs) {
+uiGmapGoogleMapApi.then(function(maps) {
+        var service = new google.maps.DirectionsService();
+ 
+        var e = originalEventArgs[0];
+            //console.log(e.latLng);
+            var result = {
+                latitude: e.latLng.lat(),
+                longitude: e.latLng.lng()
+              };
+            var nextID = $scope.markers.length;
+            var singlemarker = {
+                  id: nextID,
+                  coords: result
+            
+                 };
+
+            if ($scope.pointsArray.length === 0) {
+              $scope.markers.push(singlemarker);
+              $scope.pointsArray.push(e.latLng);
+              //$scope.polyline.path = maps.geometry.encoding.encodePath($scope.pointsArray);
+            } else {
+              $scope.markers[1] = singlemarker;
+              var lastPoint = $scope.pointsArray.length - 1;
+              service.route({
+                origin: $scope.pointsArray[lastPoint],
+                destination: e.latLng,
+                travelMode: google.maps.DirectionsTravelMode.DRIVING
+              }, function(result, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                  for (var i = 0, len = result.routes[0].overview_path.length;
+                      i < len; i++) {
+                    $scope.pointsArray.push(result.routes[0].overview_path[i]);
+                    
+                  }
+                  $scope.polylines[0].path = $scope.pointsArray;
+                  var distance_meters = math.unit(maps.geometry.spherical.computeLength($scope.polylines[0].path), 'm');
+                  $scope.newEvent.distance = math.number(distance_meters, 'mi');
+                  $scope.encodedPath = maps.geometry.encoding.encodePath($scope.pointsArray);
+                  $scope.$apply();
+                }
+                else {
+                  $scope.pointsArray.push(e.latLng);
+                  $scope.polylines[0].path=$scope.pointsArray;
+                  var distance_meters = math.unit(maps.geometry.spherical.computeLength($scope.polylines[0].path), 'm');
+                  $scope.newEvent.distance = math.number(distance_meters, 'mi');
+                  $scope.encodedPath = maps.geometry.encoding.encodePath($scope.pointsArray);
+                  $scope.$apply();
+                  // add some handling for when the status === "ZERO_RESULTS" then you simply add the new point and put the path between them
+                  // i think you just have to push the new point to the pointsArray 
+                  console.log(result);
+                  console.log(status);
+                }
+              });
+            }
+   });
+};
+
+
+createMap = function() {
+  uiGmapGoogleMapApi.then(function(maps) {
+            // nothing to do here at the moment, render the map using this function and then the user 
+            //impocts the drawing on the amp
+
+
+        //   var fromDirections = "}ktwF|`ubMp@b@iBxF}BjHmEuCaDuBgFiDaEkCuDcCwNmJwFsDwBqAkBoAg@a@}EeD_SoM~DcMNe@^iAf@^@F@DbC`BLLDL@d@IVSt@GPIJOBMCIG}@}Aq@cAWYOKIEWEY?UDYJi@\]^KRoDfHu@bB{@hCg@dBQ`AU~A_ChH_D|J_AzCc@rAwXl|@{Lv_@k@hCUrBAvABn@LnALn@FRX~@Td@Z`@Z^hAx@x@r@`BlAr@d@|B~@b@HTLt@b@hA|@ZHd@@`@Gl@Uh@g@\s@Nw@B_AGy@Ss@Wi@c@a@c@YwAk@wHoCYIqEs@}ACe@Dc@J]L[Nm@l@UXe@`AgJbXcBlFmB|Gy@dC{D`KuBrFyC|HaAxC{E`Ri@vBeB~GaCdJ{@~Ck@bBe@~@W`@[^[b@gAjA{DxDmA|@qBdA_@XkAd@cBj@}Ab@iB\{Dz@yCl@yA\mE`A}Aj@qCjAuC~AkBnA_@ZcBxAoApA{BhCoBtCwJpOo@~@YZo@hA{BpDoCfE_DbFyGbKaI`MgJ`N_HhKiE|GkL|PsAzBSBEBYT}@j@iA`@e@J_ADgCHeGJyA?u@CiBUaEkAiC}@wCoAiCsAyCkBgEaDsBeBq@m@kHgG}@y@mBaBa@_@G_@?MF]XOzEkBxD{AXKvAi@^^PVXZZlGN|DCb@Id@u@zAkApCu@fBi@tAxAdA~D`DzBnBbChB`@X";
+        //  var smallOne = "epiaGfwh}NrjC_tH";
+        //   var examplePath = maps.geometry.encoding.decodePath(fromDirections);
+        //  console.log(examplePath);
+        //   var exampleLine = {
+        //               id: 1,
+        //               path: examplePath,
+        //               stroke: {
+        //                   color: '#6060FB',
+        //                   weight: 4 
+        //               },
+        //               editable: false,
+        //               draggable: false,
+        //               geodesic: false,
+        //               visible: $scope.visible,
+        //               static: true
+        //           };
+
+        // $scope.polylines.push(exampleLine);
+    })
+};
+
+createMap();
+    
+
+
+$scope.undo = function(){
+
+};
+
+
+
+  }); // end create controller 
+
+
+
+

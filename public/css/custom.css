@@ -2,3 +2,13 @@
 	max-height: 250px;
 	overflow: scroll;
 }
+
+.angular-google-map-container { 
+	min-height: 500px;
+	width: 100%;
+ }
+
+.map-creator {
+	height: 500px;
+	width: 100%
+}

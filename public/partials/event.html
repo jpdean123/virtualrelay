@@ -1,0 +1,211 @@
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">			
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
+				<li class="active">Icons</li>
+			</ol>
+		</div><!--/.row-->
+		
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">{{ data.title }}</h1>
+			</div>
+		</div><!--/.row-->
+		<div class="row">
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-blue panel-widget ">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked star"><use xlink:href="#stroked-star"></use></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large">{{ goalMiles | number:1 }}</div>
+							<div class="text-muted">Goal Miles</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-orange panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked location-pin"><use xlink:href="#stroked-location-pin"></use></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large">{{ totalData.distance | number: 1}}</div>
+							<div class="text-muted">Current Miles</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-teal panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large">{{ athletes.length }} </div>
+							<div class="text-muted">Athletes</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-red panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked calendar"><use xlink:href="#stroked-calendar"></use></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large">{{ remaining }}</div>
+							<div class="text-muted">Days Remaining</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/.row-->
+
+		<div class="row">
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-blue panel-widget ">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked clock"><use xlink:href="#stroked-clock"></use></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large">{{ totalData.totalTime_pretty }}</div>
+							<div class="text-muted">Elapsed Time (hh:mm)</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-orange panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked dashboard dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large">{{ totalData.averagePace}}</div>
+							<div class="text-muted">Average Pace</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-teal panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked line graph"><use xlink:href="#stroked-line-graph"></use></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large">{{ totalData.elevation_gain | number:0 }} </div>
+							<div class="text-muted">Elevation (ft)</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-red panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked hourglass"><use xlink:href="#stroked-hourglass"></use></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large">{{ elapsedDays }}</div>
+							<div class="text-muted">Days Running</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/.row-->
+		
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">Current Progress</div>
+					<div class="panel-body">
+						<div class="canvas-wrapper">
+							
+							<ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" options="options" bounds="map.bounds"  >
+					            <ui-gmap-polyline ng-repeat="p in polylines" 
+					            path="p.path" 
+					            stroke="p.stroke" 
+					            visible='p.visible'
+					            geodesic='p.geodesic' 
+					            fit="false" 
+					            editable="p.editable" 
+					            draggable="p.draggable" 
+					            icons='p.icons'>
+					                    
+					            </ui-gmap-polyline>
+					          <ui-gmap-markers models="markers" coords="'coords'" icon="'icon'">
+					            </ui-gmap-markers>
+					            
+
+					        </ui-gmap-google-map>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/.row-->
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="panel panel-blue ">
+					<div class="panel-heading dark-overlay">Recent Activity</div>
+					<div class="panel-body activity-list">
+						<p ng-repeat="act in filtered = 
+						    	(activities | filter: filterByTypes) 
+						    	| orderBy : 'start_date':true">
+						    {{ act.a.name_pretty }} went for a {{act.distance_miles | number:1 }} mile {{ act.type }} {{ act.start_date_pretty }}.
+						</p>
+					</div>
+				</div>
+			</div><!--/.col-->
+
+			<div class="col-md-6">
+				<div class="panel panel-orange">
+					<div class="panel-heading dark-overlay">Want to join a race like this?</div>
+					<div class="panel-body">
+						<p>Here is where the signup form will go, I just haven't built it yet :)</p>
+					</div>
+				</div>
+			</div><!--/.col-->
+			
+		</div> <!--/.row-->
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						Individual Stats
+					</div>
+					<div class="panel-body">
+							<table class="table">
+							<thead>
+								<tr>
+									<td>Rank</td>
+									<td>Name</td>
+									<td>Total Distance <br> <i>(miles)</i></td>
+									<td>Total Time <br> <i>(hh:mm)</i></td>
+									<td>Average Pace<br> <i>(min/mile)</i></td>
+									<td>Elevation Gained<br> <i>(ft)</i></td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="a in athletes | orderBy : 'totalDistance':true">
+									<td>{{ $index + 1 }}</td>
+									<td>{{ a.name_pretty }}</td>
+									<td>{{ a.totalDistance | number:0}}</td>
+									<td>{{ a.totalTime_pretty }}</td>
+									<td>{{ a.averagePace }}</td>
+									<td>{{ a.elevation_gained | number: 0}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div> <!--/.row-->

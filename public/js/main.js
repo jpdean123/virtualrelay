@@ -894,7 +894,7 @@ function processData (d, a) {
 
 
     tempAthlete.averagePace = moment.duration(tempAthlete.totalTime / tempAthlete.totalDistance, 'seconds').format('hh:mm:ss');
-     console.log(tempAthlete.distance);
+    //console.log(tempAthlete.distance);
     // process name of athlete 
 
 
@@ -974,8 +974,33 @@ uiGmapGoogleMapApi.then(function(maps) {
 
    var singlemarker = {
     id: 0,
-    coords: currentCoordinates
+    coords: currentCoordinates,
+    icon: 'css/icons_blue/jogging.png'
    };
+
+   console.log(line[0].lat());
+   
+   var startMarker = {
+    id: 1,
+    coords: {
+      latitude: line[0].lat(),
+      longitude: line[0].lng()
+    }
+   };
+   var endMarker = {
+    id: 2,
+    coords: {
+      latitude: line[line.length-1].lat(),
+      longitude: line[line.length-1].lng()
+    }
+   };
+
+
+   console.log(startMarker);
+   $scope.markers.push(startMarker);
+   $scope.markers.push(endMarker);
+
+
 
       var singleLine = {
                       id: 1,

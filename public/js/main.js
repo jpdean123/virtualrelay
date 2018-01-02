@@ -13,7 +13,8 @@ var app = angular.module('tutorialWebApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
-  'uiGmapgoogle-maps'
+  'uiGmapgoogle-maps',
+  'chart.js'
 ]);
 
 /**
@@ -126,7 +127,7 @@ app.service('UserService', function ($firebaseAuth, $location, $rootScope){
     currentUser.email = "";
     currentUser.uid = "";
     var pathUrl = $location.path();
-    var substring = 'public/';
+    var substring = 'event/';
     var publicCheck = pathUrl.indexOf(substring);
     if (publicCheck ==-1) {
       $location.path('/signup');
@@ -660,13 +661,13 @@ function markerAlongLine (distance, line) {
 
 });
 
-app.controller('EventCtrl', function ($scope, $q, $location, $http, $firebaseObject, $routeParams, $firebaseArray, UserService, uiGmapGoogleMapApi, CalculatorService, $timeout, StravaService) {
+app.controller('EventCtrl', function ($scope, $q, $location, $http, $route, $timeout, $firebaseObject, $routeParams, $firebaseArray, UserService, uiGmapGoogleMapApi, CalculatorService, $timeout, StravaService) {
   console.log("Event Controller reporting for duty.");
 
 var eventID = $routeParams.eventid;
 var fire = firebase.database();
-
-
+$scope.user = UserService.getCurrentUser();
+console.log($scope.user);
 $scope.activities = [];
 $scope.athletes = [];
 $scope.allowedTypes = [];
@@ -684,9 +685,8 @@ $scope.allowedTypes = [];
 
         $scope.remaining = end.diff(now, "days");
         $scope.elapsedDays = now.diff(start, "days");
-        var goalMeters = math.unit(obj.distance, 'm')
-        $scope.goalMiles = math.number(goalMeters, 'mi');
-        
+        var goalMeters = math.unit(obj.distance, 'm');    
+        $scope.goalMiles = math.number(goalMeters, 'mi');    
        
 
 
@@ -706,6 +706,7 @@ $scope.allowedTypes = [];
                 processData(r[i], data[i]);
                 if (i === data.length-1) {
                   createMap($scope.data.path, $scope.data.distance,$scope.totalData.distance);
+                  createChart();
                   console.log('got to if statement to create the map?!?!?!');
                 }
               }
@@ -731,12 +732,38 @@ $scope.allowedTypes = [];
 
      // To make the data available in the DOM, assign it to $scope
      $scope.data = obj;
+    
 
 
      // For three-way data bindings, bind it to the scope instead
      obj.$bindTo($scope, "data");
 
+$scope.joinEvent = function (){
+  console.log($scope.user);
+  var id = $scope.user.uid;
 
+  $scope.data.athletes[id] = id;
+
+   $timeout( function(){
+              $route.reload();
+        }, 2000 );
+
+};
+
+$scope.alreadyJoined = true;
+
+function checkJoined (){
+  var check = 0;
+  var id = $scope.user.uid;
+
+if($scope.data.athletes[id]) {
+  
+} else {
+  $scope.alreadyJoined = false;
+}
+
+
+};
 
 function getAthletes(athleteArray) {
 
@@ -832,6 +859,7 @@ $scope.totalData = {
 
 
 function processData (d, a) {
+   checkJoined(); 
   // add athlete information to each activity
   console.log(a);
   console.log(d);
@@ -921,8 +949,8 @@ function processData (d, a) {
 
 // ALL BELOW IS FOR THE MAP - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 $scope.map = { 
-  center: { latitude: 43.512197, longitude: -84.687417 }, 
-  zoom: 6
+  center: { latitude: 42.28932431023776, longitude: -83.8299551878756 }, 
+  zoom: 10
 };
 
 
@@ -937,6 +965,16 @@ $scope.visible = true;
 
 
 $scope.markers = [];
+
+var currentPostion;
+
+$scope.changeCenter = function () {
+  var coords = { latitude: 40.28932431023776, longitude: -90.8299551878756 };
+  $scope.map.center = coords;
+  console.log(coords);
+  $scope.map.zoom = 12;
+  console.log('got to the change coords function');
+};
 
 function createMap (p,d,c) {
 
@@ -962,8 +1000,9 @@ uiGmapGoogleMapApi.then(function(maps) {
 
     var polyLengthInMeters = maps.geometry.spherical.computeLength(polyline.getPath().getArray());
     console.log(polyLengthInMeters);
-      var currentCoordinates = CalculatorService.getDistanceFromStart(distance_meters, line);
-
+    var currentCoordinates = CalculatorService.getDistanceFromStart(distance_meters, line);
+    console.log(currentCoordinates);
+    
       //var decoded = polyline.decode(rawLine);
      //var currentLocation = (c/ d) * 100 + "%";
      //console.log(currentLocation);
@@ -985,7 +1024,8 @@ uiGmapGoogleMapApi.then(function(maps) {
     coords: {
       latitude: line[0].lat(),
       longitude: line[0].lng()
-    }
+    },
+    icon: 'https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_green.png'
    };
    var endMarker = {
     id: 2,
@@ -1022,8 +1062,122 @@ uiGmapGoogleMapApi.then(function(maps) {
  
 
     }); // end google maps loader
-
+  
 }; // end create map function
+
+// charting
+
+function createChart (){
+   
+
+
+    $scope.labels = [];
+
+    $scope.series = ['Goal', 'Actual'];
+    $scope.chartdata = [[],[]];
+
+
+    //find daily average
+    console.log($scope.data);
+    var start = moment($scope.data.start_date);
+    var end = moment($scope.data.end_date);
+    var now = moment();
+
+    var daysRemaining = end.diff(now, "days");
+    var elapsedDays = now.diff(start, "days");
+    var elapsedWeeks = now.diff(start, 'weeks') + 1;
+    console.log(elapsedWeeks);
+    var totalDays = end.diff(start, "days");
+    var totalWeeks = totalDays / 7;
+    var totalMeters = math.unit($scope.data.distance, 'm');
+    var totalMiles = math.number(totalMeters, 'mi');
+
+    var milesPerWeek = totalMiles / totalWeeks;
+
+    var cumulativeMiles = 0;
+
+
+    for (var i = 0; i <= elapsedWeeks; i++) {
+      var s = {};
+      var s = start;
+
+      
+      var day;
+      if( i === 0) {
+        day = s.add(0, 'w');
+      } else {
+        day = s.add(1, 'w');
+      }
+      
+      var readable = day.format("D MMM YYYY"); 
+
+      $scope.labels.push(readable);
+
+      var weekly = i * milesPerWeek;
+      $scope.chartdata[0].push(parseFloat(weekly.toFixed(1)));
+
+      var rangeEnd = s.clone();
+     
+
+      var rangeStart = s.clone().subtract(1, 'w');
+     
+      //console.log('range start = ' + rangeStart.format('D MM YYYY') + '  and the range end is =  ' + rangeEnd.format('D MM YYYY'));
+      for (var x = 0; x < $scope.activities.length; x++) {
+        var actDate = moment($scope.activities[x].start_date);
+        if (actDate > rangeStart && actDate <= rangeEnd) {
+          
+          var meters = math.unit($scope.activities[x].distance, 'm');
+          var miles = parseFloat(math.number(meters, 'mi').toFixed(1));
+        
+          
+          cumulativeMiles = cumulativeMiles + miles;
+
+        }
+      }
+
+      $scope.chartdata[1].push(cumulativeMiles);
+      
+
+    };  
+
+
+$scope.chartcolors = ['#949FB1','#46BFBD'];
+
+      $scope.onClick = function (points, evt) {
+        console.log(points, evt);
+      };
+      $scope.datasetOverride = [{ yAxisID: 'y-axis-1' }, { xAxisID: 'x-axis-1' }];
+      $scope.options = {
+        scales: {
+          yAxes: [
+            {
+              id: 'y-axis-1',
+              type: 'linear',
+              display: true,
+              position: 'left',
+              scaleLabel: {
+                display: true,
+                labelString: 'Miles'
+              }
+            }
+          ],
+           xAxes: [
+            {
+              id: 'x-axis-1',
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Week Ending'
+              }
+            }
+          ]
+        }
+      };
+
+};
+
+
+
 
 
 }); // end event controller

@@ -16,11 +16,11 @@
                   <input name="remember" type="checkbox" value="Remember Me">Remember Me
                 </label>
               </div> -->
-              <div ng-hide="showSignin">
+              <div ng-show="showSignin">
                   <button type="submit" class="btn btn-primary" ng-click="signin()">Sign In</button>
                    <a ng-click="showSignin = !showSignin">Need to Sign Up?</a>
                 </div>
-                <div ng-show="showSignin">
+                <div ng-hide="showSignin">
                   <button type="submit" class="btn btn-primary" ng-click="signup()">Sign Up</button>
                   <a ng-click="showSignin = !showSignin">Already have an account? Sign In Here!</a>
                 </div>

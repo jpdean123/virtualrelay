@@ -408,7 +408,13 @@ function getAccessToken (t, uid) {
 
 
 function writeUserData(u,t,a) {
-  firebase.database().ref('users/' + u).set({
+  console.log(u + "   " + t + "     " +  a);
+  if (u == undefined) {
+    u = t;
+  };
+  var newAuth = firebase.database().ref('users').push();
+  newAuth.set({
+    owner: u,
     athlete : a,
     strava_token : t
   });
@@ -773,19 +779,44 @@ function getAthletes(athleteArray) {
 
     angular.forEach(athleteArray, function(value,key){
 
-        var userRef = fire.ref().child('users/' + value);
-        var userObj = $firebaseObject(userRef);
+        // console.log(value);
+        // var userRef = fire.ref('users').child('users').orderByChild('owner').equalTo(value).on('value', function(snapshot){
+        //   console.log(snapshot);
+        // });
+
+        // var userObj = $firebaseObject(userRef);
+        // console.log(userObj);
+
+        var users = fire.ref('users');
+        var query = users.orderByChild('owner').equalTo(value);
+
+
+
+        var ath;
 
           // to take an action after the data loads, use the $loaded() promise
          var pr = function() {
             var deferred = $q.defer();
-              userObj.$loaded().then(function() {
-                      console.log(userObj.athlete);
-                      userObj.athlete.strava_token = userObj.strava_token;
-                      //$scope.athletes.push(userObj.athlete);
-              deferred.resolve(userObj.athlete);
-           // getActivityList(userObj.strava_token, userObj.athlete);
-          });
+            var user;
+            query.on('value', function(snap){
+              var k = Object.keys(snap.val())[0];
+              user = snap.val();
+              console.log(k);
+
+              ath = user[k].athlete;
+              ath.strava_token = user[k].strava_token;
+              deferred.resolve(ath);
+              //console.log(snap.val().k);
+            })
+
+
+          //     userObj.$loaded().then(function() {
+          //             console.log(userObj.athlete);
+          //             userObj.athlete.strava_token = userObj.strava_token;
+          //             //$scope.athletes.push(userObj.athlete);
+          //     deferred.resolve(userObj.athlete);
+          //  // getActivityList(userObj.strava_token, userObj.athlete);
+          // });
               return deferred.promise;
         }; // end promise
 

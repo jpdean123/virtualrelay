@@ -980,8 +980,8 @@ function processData (d, a) {
 
 // ALL BELOW IS FOR THE MAP - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 $scope.map = { 
-  center: { latitude: 42.28932431023776, longitude: -83.8299551878756 }, 
-  zoom: 10
+  center: { latitude: 39.8333333, longitude: -98.585522 }, 
+  zoom: 4
 };
 
 
@@ -997,7 +997,7 @@ $scope.visible = true;
 
 $scope.markers = [];
 
-var currentPostion;
+$scope.currentPosition;
 
 $scope.changeCenter = function () {
   var coords = { latitude: 40.28932431023776, longitude: -90.8299551878756 };
@@ -1033,6 +1033,7 @@ uiGmapGoogleMapApi.then(function(maps) {
     console.log(polyLengthInMeters);
     var currentCoordinates = CalculatorService.getDistanceFromStart(distance_meters, line);
     console.log(currentCoordinates);
+    $scope.currentPosition = currentCoordinates;
     
       //var decoded = polyline.decode(rawLine);
      //var currentLocation = (c/ d) * 100 + "%";
@@ -1067,7 +1068,7 @@ uiGmapGoogleMapApi.then(function(maps) {
    };
 
 
-   console.log(startMarker);
+   //console.log(startMarker);
    $scope.markers.push(startMarker);
    $scope.markers.push(endMarker);
 
@@ -1092,6 +1093,14 @@ uiGmapGoogleMapApi.then(function(maps) {
     $scope.markers.push(singlemarker);
  
 
+    }).then(function(){
+       $timeout( function(){
+            console.log('got to timeout function and it ran');
+            $scope.map = {
+              center: $scope.currentPosition,
+              zoom: 9
+            }
+        }, 1000 );
     }); // end google maps loader
   
 }; // end create map function

@@ -199,7 +199,7 @@
 								<tr ng-repeat="a in athletes | orderBy : 'totalDistance':true">
 									<td>{{ $index + 1 }}</td>
 									<td>{{ a.name_pretty }}</td>
-									<td>{{ a.totalDistance | number:0}}</td>
+									<td>{{ a.totalDistance | number:1}}</td>
 									<td>{{ a.totalTime_pretty }}</td>
 									<td>{{ a.averagePace }}</td>
 									<td>{{ a.elevation_gained | number: 0}}</td>

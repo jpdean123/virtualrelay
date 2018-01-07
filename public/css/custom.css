@@ -1,5 +1,5 @@
 .activity-list {
-	max-height: 250px;
+	max-height: 25em;
 	overflow: scroll;
 }
 
@@ -11,4 +11,18 @@
 .map-creator {
 	height: 500px;
 	width: 100%
+}
+
+.profile_pic {
+	max-width: 3em;
+}
+
+.chat_div {
+	display: flex;
+	flex-direction: column-reverse;
+	max-height: 25em;
+}
+
+.img-circle {
+	max-width: 60px;
 }

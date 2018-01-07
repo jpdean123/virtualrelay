@@ -41,6 +41,7 @@ app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvid
     .when("/token_exchange", {templateUrl: "partials/token.html", controller: "TokenCtrl"})
     .when("/event/:eventid", {templateUrl: "partials/event.html", controller: "EventCtrl"})
     .when("/create", {templateUrl: "partials/create.html", controller: "CreateCtrl"})
+    .when("/test", {templateUrl: "partials/test.html", controller: "TestCtrl"})
     // else go to signup / login page... this app will act as the app. with a public Wordpress page to match
     // maybe we can use Bitly API to create short links to the specific events so they don't see the firebase URL
     // do that on event creation and then save it to the event for later
@@ -668,12 +669,12 @@ function markerAlongLine (distance, line) {
 });
 
 app.controller('EventCtrl', function ($scope, $q, $location, $http, $route, $timeout, $firebaseObject, $routeParams, $firebaseArray, UserService, uiGmapGoogleMapApi, CalculatorService, $timeout, StravaService) {
-  console.log("Event Controller reporting for duty.");
+  //console.log("Event Controller reporting for duty.");
 
 var eventID = $routeParams.eventid;
 var fire = firebase.database();
 $scope.user = UserService.getCurrentUser();
-console.log($scope.user);
+//console.log($scope.user);
 $scope.activities = [];
 $scope.athletes = [];
 $scope.allowedTypes = [];
@@ -703,11 +704,12 @@ $scope.allowedTypes = [];
 
 
        getAthletes(obj.athletes).then(function(data){
-            console.log(data);
+           // console.log(data);
 
+          
 
             StravaService.getStravaActivities(data).then(function(r){
-              console.log(r);
+             // console.log(r);
               for (var i = 0; i < data.length; i++) {
                 processData(r[i], data[i]);
                 if (i === data.length-1) {
@@ -801,9 +803,10 @@ function getAthletes(athleteArray) {
             query.on('value', function(snap){
               var k = Object.keys(snap.val())[0];
               user = snap.val();
-              console.log(k);
+              //console.log(k);
 
               ath = user[k].athlete;
+              ath.owner =user[k].owner; 
               ath.strava_token = user[k].strava_token;
               deferred.resolve(ath);
               //console.log(snap.val().k);
@@ -892,8 +895,8 @@ $scope.totalData = {
 function processData (d, a) {
    checkJoined(); 
   // add athlete information to each activity
-  console.log(a);
-  console.log(d);
+  //console.log(a);
+  //console.log(d);
   var list = d.data;
 
   var tempAthlete = a;
@@ -903,13 +906,14 @@ function processData (d, a) {
   tempAthlete.averagePace = 0;
   totalTime_pretty = '',
   tempAthlete.name_pretty = a.firstname + " " + a.lastname.charAt(0) + ".";
+  tempAthlete.count = 0;
 
   for (var i = 0; i < list.length; i++) {
 
   // first need to filter so that only the correct activity types are processed, also check that start time is between start/end times of event
   if ($scope.allowedTypes.indexOf(list[i].type) > -1 && moment(list[i].start_date) > moment($scope.data.start_date) && moment(list[i].start_date) < moment($scope.data.end_date)) {
 
-
+    tempAthlete.count = tempAthlete.count +1;
     // create a temporary activity object
     var tempActivity = list[i];
     tempActivity.a = a;
@@ -1096,10 +1100,16 @@ uiGmapGoogleMapApi.then(function(maps) {
     }).then(function(){
        $timeout( function(){
             console.log('got to timeout function and it ran');
+            var l = {
+              latitude: $scope.currentPosition.latitude,
+              longitude: $scope.currentPosition.longitude
+            };
+
             $scope.map = {
-              center: $scope.currentPosition,
+              center: l,
               zoom: 9
-            }
+            };
+
         }, 1000 );
     }); // end google maps loader
   
@@ -1113,8 +1123,8 @@ function createChart (){
 
     $scope.labels = [];
 
-    $scope.series = ['Goal', 'Actual'];
-    $scope.chartdata = [[],[]];
+    $scope.series = ['Goal', 'Actual', 'Difference'];
+    $scope.chartdata = [[],[],[]];
 
 
     //find daily average
@@ -1175,18 +1185,39 @@ function createChart (){
         }
       }
 
-      $scope.chartdata[1].push(cumulativeMiles);
+      var prettyCumulative = cumulativeMiles.toFixed(1);
+      $scope.chartdata[1].push(prettyCumulative);
+      var difference = cumulativeMiles - weekly;
+      var prettyDifference = difference.toFixed(1);
+      $scope.chartdata[2].push(prettyDifference);
       
 
     };  
 
 
-$scope.chartcolors = ['#949FB1','#46BFBD'];
+$scope.chartcolors = ['#949FB1','#46BFBD', '#FDB45C'];
 
       $scope.onClick = function (points, evt) {
         console.log(points, evt);
       };
-      $scope.datasetOverride = [{ yAxisID: 'y-axis-1' }, { xAxisID: 'x-axis-1' }];
+      $scope.datasetOverride = [
+        { 
+          yAxisID: 'y-axis-1',
+          type: 'line'
+
+        }, 
+        { 
+          xAxisID: 'x-axis-1' ,
+          type: 'line'
+        },
+        {
+          yAxisID: 'y-axis-1',
+          borderWidth: 1,
+          type: 'bar'
+        }
+      ];
+
+
       $scope.options = {
         scales: {
           yAxes: [
@@ -1211,11 +1242,94 @@ $scope.chartcolors = ['#949FB1','#46BFBD'];
               }
             }
           ]
+        },
+        legend: {
+            display: true,
+            position: 'bottom'
         }
       };
 
 };
 
+
+// chat functions
+
+var fireRef = firebase.database();
+
+ var fireChats = fireRef.ref().child('events/' + eventID).child('chats');
+ var chats = $firebaseArray(fireChats);
+
+
+     // to take an action after the data loads, use the $loaded() promise
+     chats.$loaded().then(function() {
+        console.log(chats);
+
+
+
+       // To iterate the key/value pairs of the object, use angular.forEach()
+       angular.forEach(chats, function(value, key) {
+         
+       });
+
+
+     });
+
+     // To make the data available in the DOM, assign it to $scope
+     $scope.chats = chats;
+
+    
+$scope.sendChat = function (){
+
+  var msgText = $scope.newchat;
+  var msgTimestamp = moment().format();
+
+  var chatMsg = {
+    text: msgText,
+    date: msgTimestamp,
+    owner: $scope.user.uid
+  };
+
+   chats.$add(chatMsg).then(function(ref) {
+    var id = ref.key;
+    //console.log("added record with id " + id);
+    chats.$indexFor(id); // returns location in the array
+  });
+   $scope.newchat = '';
+};
+
+chats.$watch(function() { 
+
+  angular.forEach(chats, function(value, key) {
+         $scope.chats[key].time_relative = moment(value.date).fromNow();
+         getAthleteData($scope.chats[key].owner).then(function(athData){
+          $scope.chats[key].profile = athData.profile;
+          $scope.chats[key].name = athData.name;
+         });
+         
+       });
+
+});
+
+function getAthleteData (o) {
+          var deferred = $q.defer()
+          var users = fire.ref('users');
+          var query = users.orderByChild('owner').equalTo(o);
+
+         query.on('value', function(snap){
+              var k = Object.keys(snap.val())[0];
+              var user = snap.val();
+              console.log(user);
+              var b = user[k];
+              var d = {
+                profile: b.athlete.profile_medium,
+                name: b.athlete.firstname + " " + b.athlete.lastname
+              };
+
+              deferred.resolve(d);
+              //console.log(snap.val().k);
+        })
+         return deferred.promise;
+};
 
 
 
@@ -1387,4 +1501,80 @@ $scope.undo = function(){
 
 
 
+app.controller("TestCtrl",
+  function($scope, $q, $location, $http, $firebaseObject, $routeParams, $firebaseArray, UserService, uiGmapGoogleMapApi, CalculatorService, $timeout, StravaService) {
 
+// start chat functions:
+
+var eventID = "-L-s5mzXCE6iEwT0OQ0T";
+
+var fireRef = firebase.database();
+
+ var fireChats = fireRef.ref().child('events/' + eventID).child('chats');
+ var chats = $firebaseArray(fireChats);
+
+function createChat() {
+     // to take an action after the data loads, use the $loaded() promise
+     chats.$loaded().then(function() {
+        console.log(chats);
+
+
+
+       // To iterate the key/value pairs of the object, use angular.forEach()
+       angular.forEach(chats, function(value, key) {
+         
+       });
+
+
+     });
+
+     // To make the data available in the DOM, assign it to $scope
+     $scope.chats = chats;
+
+};
+    
+$scope.sendChat = function (){
+
+  var msgText = $scope.newchat;
+  var msgTimestamp = moment().format();
+
+  var chatMsg = {
+    text: msgText,
+    date: msgTimestamp
+  };
+
+   chats.$add(chatMsg).then(function(ref) {
+    var id = ref.key;
+    console.log("added record with id " + id);
+    chats.$indexFor(id); // returns location in the array
+  });
+};
+
+chats.$watch(function() { 
+
+  angular.forEach(chats, function(value, key) {
+         $scope.chats[key].time_relative = moment(value.date).fromNow();
+         var athData = getAthleteData($scope.chats[key].owner);
+         $scope.chats[key].profile = athData.profile;
+         $scope.chats[key].name = athData.name;
+       });
+
+});
+
+function getAthleteData (o) {
+
+  var users = fire.ref('users');
+  var query = users.orderByChild('owner').equalTo(value);
+
+  angular.forEach($scope.athletes, function(value, key) {
+         if ($scope.athletes[key].owner === value) {
+          var d = {
+            profile: $scope.athletes[key].profile_medium,
+            name: $scope.athletes[key].name_pretty
+          };
+          return d;
+         }
+       });
+};
+
+  }); // end create controller 

@@ -76,7 +76,7 @@
 						</div>
 						<div class="col-sm-9 col-lg-7 widget-right">
 							<div class="large">{{ totalData.totalTime_pretty }}</div>
-							<div class="text-muted">Elapsed Time (hh:mm)</div>
+							<div class="text-muted">Time (hh:mm)</div>
 						</div>
 					</div>
 				</div>
@@ -125,7 +125,7 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="panel panel-default">
-					<div class="panel-heading">Current Progress</div>
+					<div class="panel-heading">Race Map</div>
 					<div class="panel-body">
 						<div class="canvas-wrapper">
 							
@@ -167,18 +167,40 @@
 			</div><!--/.col-->
 
 			<div class="col-md-6">
-				<div class="panel panel-orange">
-					<div class="panel-heading dark-overlay">Want to join a race like this?</div>
-					<div class="panel-body">
-						<p>Here is where the signup form will go, I just haven't built it yet :)</p>
+				<div class="panel panel-default chat">
+					<div class="panel-heading">
+						Tash Talk Zone
+					</div>
+					<div class="panel-body chat_div activity-list">
+						<ul>
+							<li class="left clearfix" ng-repeat="c in chats"><span class="chat-img pull-left">
+								<img ng-src="{{c.profile}}" alt="User Avatar" class="img-circle" />
+								</span>
+								<div class="chat-body clearfix">
+									<div class="header"><strong class="primary-font">{{c.name}}</strong> <small class="text-muted">{{c.time_relative}}</small></div>
+									<p>{{c.text}}</p>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="panel-footer">
+						<form ng-submit="sendChat()">
+						<div class="input-group" ng-show="user.uid">
+							<input id="btn-input" type="text" class="form-control input-md" placeholder="Type your message here..." ng-model="newchat"/><span class="input-group-btn">
+								<button class="btn btn-primary btn-md" id="btn-chat">Send</button>
+						</span></div>
+						<div ng-hide="user.uid">You must be logged in to send a chat message.</div>
+
+						</form>
 					</div>
 				</div>
-			</div><!--/.col-->
+
+</div>
 			
 		</div> <!--/.row-->
 
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-12">
 				<div class="panel panel-success">
 					<div class="panel-heading">
 						Individual Stats
@@ -193,16 +215,18 @@
 									<td>Total Time <br> <i>(hh:mm)</i></td>
 									<td>Average Pace<br> <i>(min/mile)</i></td>
 									<td>Elevation Gained<br> <i>(ft)</i></td>
+									<td>Number of Activities</td>
 								</tr>
 							</thead>
 							<tbody>
 								<tr ng-repeat="a in athletes | orderBy : 'totalDistance':true">
 									<td>{{ $index + 1 }}</td>
-									<td>{{ a.name_pretty }}</td>
+									<td><img class="profile_pic" ng-src="{{a.profile_medium}}"> {{ a.name_pretty }}</td>
 									<td>{{ a.totalDistance | number:1}}</td>
 									<td>{{ a.totalTime_pretty }}</td>
 									<td>{{ a.averagePace }}</td>
 									<td>{{ a.elevation_gained | number: 0}}</td>
+									<td>{{a.count}}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -217,7 +241,7 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">Team Progress</div>
 					<div class="panel-body">
-						<canvas id="line" class="chart chart-line" chart-data="chartdata"
+						<canvas id="line" class="chart chart-bar" chart-data="chartdata"
 								chart-labels="labels" chart-series="series" chart-options="options"
 								chart-dataset-override="datasetOverride" chart-click="onClick" chart-colors="chartcolors">
 								</canvas>

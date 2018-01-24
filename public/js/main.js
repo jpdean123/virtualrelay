@@ -934,7 +934,7 @@ function processData (d, a) {
 
     // add total time to totalData object
     $scope.totalData.totalTime = $scope.totalData.totalTime + list[i].moving_time;
-    $scope.totalData.totalTime_pretty = moment.duration($scope.totalData.totalTime, 'seconds').format('hh:mm');
+    $scope.totalData.totalTime_pretty = moment.duration($scope.totalData.totalTime, 'seconds').format('dd:hh:mm');
 
 
   // process timing
@@ -1504,77 +1504,175 @@ $scope.undo = function(){
 app.controller("TestCtrl",
   function($scope, $q, $location, $http, $firebaseObject, $routeParams, $firebaseArray, UserService, uiGmapGoogleMapApi, CalculatorService, $timeout, StravaService) {
 
-// start chat functions:
 
-var eventID = "-L-s5mzXCE6iEwT0OQ0T";
+var fire = firebase.database();
+$scope.createSub = function (){
+  console.log('created');
 
-var fireRef = firebase.database();
+var baseURL = 'https://api.strava.com/api/v3/push_subscriptions';
 
- var fireChats = fireRef.ref().child('events/' + eventID).child('chats');
- var chats = $firebaseArray(fireChats);
+var data = {
+  client_id : '21642',
+  client_secret : '81980bc6ef83b3a7c5665698c299d579c46f8801',
+  object_type : 'activity',
+  aspect_type : 'create',
+  callback_url : 'https://us-central1-virtual-relay.cloudfunctions.net/newstravaactivity',
+  verify_token : 'STRAVA'
+};
 
-function createChat() {
-     // to take an action after the data loads, use the $loaded() promise
-     chats.$loaded().then(function() {
-        console.log(chats);
+var client_id = '21642';
+var client_secret = '81980bc6ef83b3a7c5665698c299d579c46f8801';
+var object_type = 'activity';
+var aspect_type = 'create';
+var callback_url ='https://us-central1-virtual-relay.cloudfunctions.net/newstravaactivity';
+var mverify_token = '5a1164855c9c18cc954aecbc8850faf19ce4274a';
+var verify_token = 'STRAVA'
 
 
+var finalURL = baseURL 
+              + '?client_id=' + client_id 
+              + '&client_secret=' + client_secret 
+              + '&object_type=' + object_type 
+              + '&aspect_type=' + aspect_type 
+              + '&callback_url=' + callback_url
+              + '&verify_token=' + verify_token;
 
-       // To iterate the key/value pairs of the object, use angular.forEach()
-       angular.forEach(chats, function(value, key) {
-         
-       });
+$scope.final = finalURL;
+
+console.log(finalURL);
+
+    $http({
+                url: baseURL,
+                method: "POST",
+                params: data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+            })
+            .then(function(response) {
+              console.log(response);
+            }, 
+            function(response) {
+              console.log(response);  
+            });
+};
 
 
-     });
+$scope.checkSubs = function (){
 
-     // To make the data available in the DOM, assign it to $scope
-     $scope.chats = chats;
+var baseURL = 'https://api.strava.com/api/v3/push_subscriptions';
+var data = {
+  client_id : '21642',
+  client_secret : '81980bc6ef83b3a7c5665698c299d579c46f8801'
+};
+
+ $http({
+                url: baseURL,
+                method: "GET",
+                params: data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+            })
+            .then(function(response) {
+              $scope.subs = response;
+              console.log(response);
+            }, 
+            function(response) {
+              console.log(response);  
+            });
 
 };
-    
-$scope.sendChat = function (){
 
-  var msgText = $scope.newchat;
-  var msgTimestamp = moment().format();
+$scope.findUser = function () {
 
-  var chatMsg = {
-    text: msgText,
-    date: msgTimestamp
-  };
+  var stravaUserId = 2325159;
+  var stravaActivityId = 1372263999;
 
-   chats.$add(chatMsg).then(function(ref) {
-    var id = ref.key;
-    console.log("added record with id " + id);
-    chats.$indexFor(id); // returns location in the array
+
+  
+
+  var users = fire.ref('users');
+  var query = users.orderByChild('athlete/id').equalTo(stravaUserId);
+
+
+    var user;
+    $scope.ath;
+    query.once('value', function(snap){
+      var k = Object.keys(snap.val())[0];
+      console.log(k);
+      user = snap.val();
+      //console.log(k);
+
+      $scope.ath = user[k].athlete;
+      $scope.ath.owner =user[k].owner; 
+      $scope.ath.strava_token = user[k].strava_token;
+     pullActivity(k, user[k].owner, stravaActivityId, user[k].strava_token);
+    })
+};
+
+function pullActivity (fbID, userID, actID, stToken) {
+
+    var actURL = 'https://www.strava.com/api/v3/activities/' + actID;
+     var b = 'Bearer ' + stToken;
+     $http({
+      url: actURL,
+      method: "GET",
+      headers: {
+       'Authorization': b
+     }
+  })
+  .then(function(response) {
+    var newObj = fire.ref().child('users/' + fbID + '/activities/').push();
+    var newActivity = response.data;
+    newObj.set(newActivity);
+  }, 
+  function(response) { // optional
+    console.log(response);
+     
   });
 };
 
-chats.$watch(function() { 
 
-  angular.forEach(chats, function(value, key) {
-         $scope.chats[key].time_relative = moment(value.date).fromNow();
-         var athData = getAthleteData($scope.chats[key].owner);
-         $scope.chats[key].profile = athData.profile;
-         $scope.chats[key].name = athData.name;
-       });
+// var usersRef = fire.ref('users');
+// usersRef.on('child_changed', snap => {
+//   console.log(snap.val());
+//   console.log(snap.key);
 
-});
+//   var userEvents = fire.ref('userEvents' + snap.key);
+//   userEvents.once('value').then(s => {
+//     var eventKeys = Object.keys(s.val());
+//     var updateObj = {};
 
-function getAthleteData (o) {
+//     eventKeys.forEach(key =>{
+//       console.log(key);
+//       updateObj['events/' + key + '/athletes/' + snap.key] = snap.val();
+//     });
 
-  var users = fire.ref('users');
-  var query = users.orderByChild('owner').equalTo(value);
+//       return fire.update(updateObj);
+//   })
 
-  angular.forEach($scope.athletes, function(value, key) {
-         if ($scope.athletes[key].owner === value) {
-          var d = {
-            profile: $scope.athletes[key].profile_medium,
-            name: $scope.athletes[key].name_pretty
-          };
-          return d;
-         }
-       });
-};
+// });
 
-  }); // end create controller 
+
+  }); // end Test controller 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

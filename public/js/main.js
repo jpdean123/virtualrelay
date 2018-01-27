@@ -42,6 +42,7 @@ app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvid
     .when("/event/:eventid", {templateUrl: "partials/event.html", controller: "EventCtrl"})
     .when("/create", {templateUrl: "partials/create.html", controller: "CreateCtrl"})
     .when("/test", {templateUrl: "partials/test.html", controller: "TestCtrl"})
+    .when("/example/:eventid", {templateUrl: "partials/example.html", controller: "ExampleCtrl"})
     // else go to signup / login page... this app will act as the app. with a public Wordpress page to match
     // maybe we can use Bitly API to create short links to the specific events so they don't see the firebase URL
     // do that on event creation and then save it to the event for later
@@ -1580,34 +1581,86 @@ var data = {
 
 };
 
+
+
+$scope.userEventsList = {};
+
+ var ref = fire.ref().child('userEvents');
+ var obj = $firebaseObject(ref);
+
+     // to take an action after the data loads, use the $loaded() promise
+     obj.$loaded().then(function() {
+        
+
+     // To make the data available in the DOM, assign it to $scope
+     $scope.userEventsList = obj;
+
+
+     // For three-way data bindings, bind it to the scope instead
+     obj.$bindTo($scope, "userEventsList");
+   });
+
+
+
+
+$scope.stravaUserId = "";
+$scope.fbId = ""
 $scope.findUser = function () {
 
-  var stravaUserId = 2325159;
   var stravaActivityId = 1372263999;
 
 
   
 
   var users = fire.ref('users');
-  var query = users.orderByChild('athlete/id').equalTo(stravaUserId);
+  var query = users.orderByChild('athlete/id').equalTo(Number($scope.stravaUserId));
 
 
     var user;
-    $scope.ath;
+
     query.once('value', function(snap){
       var k = Object.keys(snap.val())[0];
       console.log(k);
+      $scope.fbId = k;
       user = snap.val();
+
       //console.log(k);
 
-      $scope.ath = user[k].athlete;
-      $scope.ath.owner =user[k].owner; 
-      $scope.ath.strava_token = user[k].strava_token;
-     pullActivity(k, user[k].owner, stravaActivityId, user[k].strava_token);
+      $scope.userData = user[k];
+      $scope.strava_token = user[k].strava_token;
+  
+      $scope.$apply();
+
     })
 };
 
-function pullActivity (fbID, userID, actID, stToken) {
+
+//a[0].data.length
+$scope.eventsList = function(){
+  var eventID = "-L-s5mzXCE6iEwT0OQ0T";
+  
+  var options = {
+    "-L-s5mzXCE6iEwT0OQ0T": true 
+  }
+  var eventList = fire.ref().child('userEvents/' + $scope.fbId);
+  eventList.set(options)
+
+
+};
+
+
+$scope.uploadActivities = function(){
+  var arr =[$scope.userData];
+      StravaService.getStravaActivities(arr).then(function(a){
+        for (var i = 0; i < a[0].data.length; i++) {
+          pullActivity($scope.fbId,a[0].data[i].id,$scope.strava_token);
+        }
+      });
+
+};
+
+$scope.detailedActivityList = [];
+function pullActivity (fbID, actID, stToken) {
 
     var actURL = 'https://www.strava.com/api/v3/activities/' + actID;
      var b = 'Bearer ' + stToken;
@@ -1619,6 +1672,8 @@ function pullActivity (fbID, userID, actID, stToken) {
      }
   })
   .then(function(response) {
+    console.log(response.data.id);
+    $scope.detailedActivityList.push(response.data);
     var newObj = fire.ref().child('users/' + fbID + '/activities/').push();
     var newActivity = response.data;
     newObj.set(newActivity);
@@ -1630,25 +1685,6 @@ function pullActivity (fbID, userID, actID, stToken) {
 };
 
 
-// var usersRef = fire.ref('users');
-// usersRef.on('child_changed', snap => {
-//   console.log(snap.val());
-//   console.log(snap.key);
-
-//   var userEvents = fire.ref('userEvents' + snap.key);
-//   userEvents.once('value').then(s => {
-//     var eventKeys = Object.keys(s.val());
-//     var updateObj = {};
-
-//     eventKeys.forEach(key =>{
-//       console.log(key);
-//       updateObj['events/' + key + '/athletes/' + snap.key] = snap.val();
-//     });
-
-//       return fire.update(updateObj);
-//   })
-
-// });
 
 
   }); // end Test controller 

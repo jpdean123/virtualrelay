@@ -1,0 +1,18 @@
+{
+  "firebase": {
+                  "databaseURL": "https://virtual-relay.firebaseio.com",
+                  "credential": {
+                                "type": "service_account",
+                                "project_id": "virtual-relay",
+                                "private_key_id": "040e220f42045b913b3219564464088c6e51a226",
+                                "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCUpjGDoCUbl29g\nv476I7ixORiElKNtaY6vNrLrVGVQWXJachtYWdF25ryws9xRU3xy9aIbh2ni2Lr9\n/whtlzIvQEM508EGBEpy1cnwWbFQkd0Oc9RlPpC7FBlKlzM5yaLUev9qFP+r0uzV\n1gNsUO/lw9YFS2JdPam0+4dN5SgkI7BRk8Tu82bdla38hgePoCA8yfSQFijfe1Md\nt/AtyNukMq++XrvZkG7Op0YWXoZMksrZV57qFuxQ6dP1wa7j+zuTfNrYUR9d/lPu\n3/XhizXuZNrRsZqvG6NyoIGssNKsEeEAa+FpnSYSmj9q5N/JPv2CJ4R/71scczHd\noibbOcQ5AgMBAAECggEAAZp+6bfhv0ntKt3Vb5z9HsmB15dqiGsXx3V5KPgEyjMD\nErF62mIAb+xDLo3Vnjxb96kmqt1a6anLzhH3Qlopyq9Nj+jpupDMww3tErHL893Z\nYJvs00+irwCNMoJag/p1i4065ScZW6UkZnSNmLnfIi6tlb3n06UkCAj6ZjyJuL+g\nuC0QeFfKQtHcmmdxDvlYU7ib90a7zo/s9T+wBJHRxOJ22cH/sLVzZ5I0cKBfnkTw\n0Kshkloy1ECGHrAEqwRCJGNmDA9vvZI5BNxtKW1vHoOvLph3JmTM7Ljy0jox81h3\ncyrkaGDyE1aofZ/1ub4m5H85zIlpVN09WEperyiDwQKBgQDQ/xd6Ri1ASeS/Qf+k\nrvXNNs7YEIHRbu61Q47+KJ7SzYbqoiAiBCnFJK2SknYyUvDMwDkaO4nK2PIj2qkK\nahaL0uY7OwEOS7uG02L8U1VjUYOJKaGAW5VYnPa3KazqEx3FUGVQjHdQebWyRSAn\nfDI3N23bjMU/naowtuKNGpq/9QKBgQC2FKBVC21a+RofoNBz00M7lnz03VGaeznp\nwS0loX/oDmI/BAF+NspgbhGQvAo/LjRuDf3nZVRm3PbkWNuZfWZALOrCktNBk4im\nJEkK1SBm0MPsopXtBLIec49hUwly90yFz0ut2GAUqPAjTqqBRcn6bAdMJTOyMWaH\nHYf8UwRctQKBgDoqxR4C6hU6e6+/bqcnCsJSvr7j2T2w4j8QzntuUsXY7fPfq5HM\nFtQHoUdp+/uFmf9igIIMkA0k1D+mW+XKIPxJdkqF4YVZDpg3vRT9HIbH6RQDwi83\nThmblg7kSnvbVi3Ucl44ufxr42X6VzimGFPF2Y2BYGSUPQnR3Lvo66kBAoGAJDkq\nRIEHemfASLaHgeNvprUjmttE1sTZGqXxw2DDv3jNFthHK8LetBxxpieiqjsY9yQV\ndSl1hxlCjN8YoQqPgwjsk1T+bjdZoiPp3BvWXF3//F3EEekzPlejGKuaX6LPOHer\nCKTZSILrczq9NQabThSbxwxHopWtXggD+7DQV1kCgYAc/TwWMB9/uh3HCwIYofsQ\nIGIiGnhxtvyzZ9AtDR9OTWvkg9W0fC22QpINrWR0T8dxt7xd336okQi/cbxQa5YN\n0xfRmkcBB7GAcKYDTPiZ320mwd+l+Fk8TNdlAYSYg8XhHNTZx05GsJ8uzztgkMO4\n7Van7053/vG/QRH+cxDp5w==\n-----END PRIVATE KEY-----\n",
+                                "client_email": "virtual-relay@appspot.gserviceaccount.com",
+                                "client_id": "115284739347850610090",
+                                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                                "token_uri": "https://accounts.google.com/o/oauth2/token",
+                                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                                "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/virtual-relay%40appspot.gserviceaccount.com"
+                              }
+                }
+  
+}

@@ -7,20 +7,17 @@
 		</div><!--/.row-->
 		
 		
-<button ng-click='createSub()'>click me</button>
-
-<pre>{{final}}</pre>
-
+<h2>User Events List</h2>
+<pre>{{userEventsList| json}}</pre>
 
 
-<br><br>
-<h2>List Subscriptions</h2>
-
-<button ng-click='checkSubs()'>click me</button>
-
-<pre>{{subs | json}}</pre>
+<input type="" name="" ng-model="stravaUserId">
+<button ng-click="findUser()">Find the User</button>
+<button ng-click="eventsList()">Add to Events List</button>
+<button ng-click="uploadActivities()">Upload Activities</button>
 
 
-<h2>Pull User</h2>
-<button ng-click="findUser()">Find User</button>
-<pre>{{ath | json}}</pre>
+<pre>{{ userData | json }}</pre>
+
+<h2>Detailed ctivity list:</h2>
+<pre>{{detailedActivityList | json }}</pre>

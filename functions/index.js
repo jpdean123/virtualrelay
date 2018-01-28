@@ -84,11 +84,24 @@ const query = users.orderByChild('athlete/id').equalTo(userStravaId);
 	return promise
 }).then(function(data){
 	var newObj = db.ref().child('users/' + fbUserId + '/activities/').push();
-    var newActivity = JSON.parse(data);
+    var jsonObj = JSON.parse(data);
+    var newActivity = {
+    	athlete : jsonObj.athlete,
+    	distance : jsonObj.distance,
+    	elapsed_time : jsonObj.elapsed_time,
+    	id : jsonObj.id,
+    	map : jsonObj.map,
+    	moving_time: jsonObj.moving_time,
+    	name: jsonObj.name,
+    	start_date: jsonObj.start_date,
+    	timezone: jsonObj.timezone,
+    	type: jsonObj.type,
+    	total_elevation_gain: jsonObj.total_elevation_gain
+    };
     newObj.set(newActivity).then(function(){
     	res.send(newActivity);
     });
-
+ 
 	
 }).catch(reason =>{
 	console.log(reason);
@@ -165,6 +178,7 @@ exports.syncActivities = functions.database
 .onWrite(event => {
 	var userKey = event.data.key;
 	var objData = event.data.val();
+	//console.log(event.data.val());
 	
 
 	const root = event.data.ref.root;
@@ -173,7 +187,7 @@ exports.syncActivities = functions.database
 		return userEvents.then(s => {
 		  			
 		  		let eventKeys = Object.keys(s.val());
-		  		console.log(eventKeys);
+		  		//console.log(eventKeys);
 				let updateObj = {};
 
 				// create an entry for each event the user is in

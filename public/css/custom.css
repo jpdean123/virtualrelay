@@ -18,7 +18,10 @@
 }
 
 .profile_pic {
-	max-width: 3em; 
+	max-width: 2em; 
+	border-radius: 50%;
+	border: 0;
+	vertical-align: middle;
 }
 
 .chat_div {
@@ -28,7 +31,7 @@
 }
 
 .img-circle {
-	max-width: 25px;
+	max-width: 4em;
 }
 
 .map-row {
@@ -58,4 +61,30 @@
 
 .chat {
 	
+}
+
+.recent_links {
+	color: rgba(255, 255, 255, .8);
+}
+.recent_links:hover {
+	color: rgba(255, 255, 255, .8);
+}
+
+.map-legend {
+	padding-top: .5em;
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	width: 100%;
+	font-size: .85em;
+}
+
+.map-legend-children {
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: center;
+}
+
+.map-legend-children img {
+	padding-right: .5em;
 }

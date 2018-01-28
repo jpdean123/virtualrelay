@@ -14,7 +14,8 @@ var app = angular.module('tutorialWebApp', [
   'ngResource',
   'ngSanitize',
   'uiGmapgoogle-maps',
-  'chart.js'
+  'chart.js',
+  'ui.bootstrap'
 ]);
 
 /**
@@ -1654,9 +1655,25 @@ $scope.uploadActivities = function(){
       StravaService.getStravaActivities(arr).then(function(a){
         for (var i = 0; i < a[0].data.length; i++) {
           pullActivity($scope.fbId,a[0].data[i].id,$scope.strava_token);
+          console.log(i);
         }
       });
 
+};
+
+$scope.activityList = function (){
+  $scope.stravaToken;
+   var actURL = 'https://www.strava.com/api/v3/athlete';
+     var b = 'Bearer ' + $scope.stravaToken;
+     $http({
+      url: actURL,
+      method: "GET",
+      headers: {
+       'Authorization': b
+     }
+  }).then(function(r){
+    $scope.foundActivity = r;
+  })
 };
 
 $scope.detailedActivityList = [];
@@ -1672,10 +1689,24 @@ function pullActivity (fbID, actID, stToken) {
      }
   })
   .then(function(response) {
-    console.log(response.data.id);
+    
     $scope.detailedActivityList.push(response.data);
     var newObj = fire.ref().child('users/' + fbID + '/activities/').push();
-    var newActivity = response.data;
+    var jsonObj = response.data;
+    var newActivity = {
+      athlete : jsonObj.athlete,
+      distance : jsonObj.distance,
+      elapsed_time : jsonObj.elapsed_time,
+      id : jsonObj.id,
+      map : jsonObj.map,
+      moving_time: jsonObj.moving_time,
+      name: jsonObj.name,
+      start_date: jsonObj.start_date,
+      timezone: jsonObj.timezone,
+      type: jsonObj.type,
+      total_elevation_gain: jsonObj.total_elevation_gain
+    };
+    console.log(newActivity);
     newObj.set(newActivity);
   }, 
   function(response) { // optional
@@ -1684,6 +1715,21 @@ function pullActivity (fbID, actID, stToken) {
   });
 };
 
+
+$scope.deleteActivities = function (){
+ var objectDelete = fire.ref('users/' + $scope.fbId + '/activities');
+      objectDelete.remove();
+};
+
+$scope.pushRandom = function(){
+  var randObj = fire.ref('users/' + $scope.fbId + '/activities/something');
+      randObj.set('hello world');
+
+  $timeout(function(){
+     var objectDelete = fire.ref('users/' + $scope.fbId + '/activities/something');
+      objectDelete.remove();
+  }, 5000)
+};
 
 
 

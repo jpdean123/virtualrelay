@@ -148,6 +148,17 @@
 
 					        </ui-gmap-google-map>
 						</div>
+						<div class="map-legend">
+							<div class="map-legend-children" ng-repeat='m in markers'>
+								<img ng-src="{{m.icon}}">
+								<div>
+									{{m.legend}}<br>
+									<i>{{m.readable}}</i>
+								</div>
+								
+							</div>
+							
+						</div>
 					</div>
 				</div>
 			</div>
@@ -159,7 +170,7 @@
 						<p ng-repeat="act in filtered = 
 						    	(activities | filter: filterByTypes) 
 						    	| orderBy : 'start_date':true">
-						    {{ act.a.name_pretty }} went for a {{act.distance_miles | number:1 }} mile {{ act.type }} {{ act.start_date_pretty }}.
+						    <a class="recent_links" ng-href="https://www.strava.com/activities/{{act.id}}" ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()" target="_blank" tooltip-placement="top" uib-tooltip="{{act.distance_miles | number:1}} miles, {{act.elevation_gain | number:0}} ft of gain, {{act.time_pretty}}, {{act.pace}} per mile. Click to view on Strava">{{ act.a.name_pretty }} went for a {{act.distance_miles | number:1 }} mile {{ act.type }} {{ act.start_date_pretty }}.</a> <span ng-show="hoverEdit" class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
 						</p>
 					</div>
 				</div>
@@ -172,7 +183,7 @@
 					</div>
 					<div class="panel-body chat_div">
 						<ul>
-							<li class="left clearfix" ng-repeat="c in data.chats"><span class="chat-img pull-left">
+							<li class="left clearfix" ng-repeat="c in chats"><span class="chat-img pull-left">
 								<img ng-src="{{c.profile}}" alt="User Avatar" class="img-circle" />
 								</span>
 								<div class="chat-body clearfix">
@@ -254,3 +265,6 @@
 				</div>
 			</div>
 		</div><!--/.row-->
+
+
+<pre>{{unusedActivities | json }}</pre>

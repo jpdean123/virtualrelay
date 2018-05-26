@@ -15,7 +15,9 @@ var app = angular.module('tutorialWebApp', [
   'ngSanitize',
   'uiGmapgoogle-maps',
   'chart.js',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'ui.select',
+  'rzModule'
 ]);
 
 /**
@@ -26,7 +28,7 @@ app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvid
   $locationProvider.hashPrefix('');
   $routeProvider
     // Home
-    .when("/", {templateUrl: "partials/home.html", controller: "PageCtrl"})
+    // .when("/", {templateUrl: "partials/home.html", controller: "PageCtrl"})
     // Pages
     .when("/about", {templateUrl: "partials/about.html", controller: "PageCtrl"})
     .when("/faq", {templateUrl: "partials/faq.html", controller: "PageCtrl"})
@@ -43,6 +45,7 @@ app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvid
     .when("/event/:eventid", {templateUrl: "partials/event.html", controller: "EventCtrl"})
     .when("/create", {templateUrl: "partials/create.html", controller: "CreateCtrl"})
     .when("/test", {templateUrl: "partials/test.html", controller: "TestCtrl"})
+    .when("/admin", {templateUrl: "partials/admin.html", controller: "AdminCtrl"})
     .when("/example/:eventid", {templateUrl: "partials/example.html", controller: "ExampleCtrl"})
     // else go to signup / login page... this app will act as the app. with a public Wordpress page to match
     // maybe we can use Bitly API to create short links to the specific events so they don't see the firebase URL
@@ -192,53 +195,6 @@ app.service('StravaService', function ($firebaseAuth, $location, $rootScope, $ht
 
 }); // end of service
 
-
-app.service('CalculatorService', function ($firebaseAuth, $location, $rootScope){
-
-
-
-  this.getDistanceFromStart = function(metres, encodedLine) {
-        // first create a google maps line that we can work with 
-
-        var polyline = new google.maps.Polyline({
-             path: encodedLine,
-             geodesic: true,
-             strokeColor: '#5589ca',
-             strokeOpacity: 1.0,
-             strokeWeight: 2
-           });
-
-        console.log(polyline.getPath().getLength());
-
-    // some awkward special cases
-    if (metres == 0) return polyline.getPath().getAt(0);
-    if (metres < 0) return null;
-    if (polyline.getPath().getLength() < 2) return null;
-    var dist = 0;
-    var olddist = 0;
-    for (var i = 1;
-      (i < polyline.getPath().getLength() && dist < metres); i++) {
-      olddist = dist;
-      dist += google.maps.geometry.spherical.computeDistanceBetween(
-        polyline.getPath().getAt(i),
-        polyline.getPath().getAt(i - 1)
-      );
-    }
-    if (dist < metres) {
-      return null;
-    }
-    var p1 = polyline.getPath().getAt(i - 2);
-    var p2 = polyline.getPath().getAt(i - 1);
-    var m = (metres - olddist) / (dist - olddist);
-    var result = {
-      latitude: p1.lat() + (p2.lat() - p1.lat()) * m,
-      longitude: p1.lng() + (p2.lng() - p1.lng()) * m
-    };
-
-    return result;
-  };
-
-}); // end of service
 
 app.controller("HeaderCtrl", ["$scope", "$firebaseAuth","$location", "UserService",
   function($scope, $firebaseAuth, $location,UserService) {
@@ -514,13 +470,7 @@ app.filter('sumByColumn', function () {
 
 
 
-app.controller('DashCtrl', function ($scope, $location, $http) {
-  
-$scope.strava_token = false;
 
-
-
-});
 
 
 
@@ -670,7 +620,7 @@ function markerAlongLine (distance, line) {
 
 });
 
-app.controller('EventCtrl', function ($scope, $q, $location, $http, $route, $timeout, $firebaseObject, $routeParams, $firebaseArray, UserService, uiGmapGoogleMapApi, CalculatorService, $timeout, StravaService) {
+app.controller('OLDEventCtrl', function ($scope, $q, $location, $http, $route, $timeout, $firebaseObject, $routeParams, $firebaseArray, UserService, uiGmapGoogleMapApi, CalculatorService, $timeout, StravaService) {
   //console.log("Event Controller reporting for duty.");
 
 var eventID = $routeParams.eventid;
@@ -1339,167 +1289,7 @@ function getAthleteData (o) {
 }); // end event controller
 
 
-app.controller("CreateCtrl",
-  function($scope, $q, $location, $http, $firebaseObject, $routeParams, $firebaseArray, UserService, uiGmapGoogleMapApi, CalculatorService, $timeout, StravaService) {
 
-// scope variable for the form 
-
-$scope.newEvent = {
-  title: "",
-  description: "",
-  distance: 0,
-  people_count: 0,
-  path: ""
-}
-
-    // basic steps
-          // form in the view for some data
-          // render a map to create path variable
-          // search for users to add athletes & or add email addresses
-
-
-
-
-  // google maps stuff
-  $scope.markers = [];
-  //push only first and last marker to the map
-  //apend existing polyline with total polyline
-
-  $scope.pointsArray = [];
-  $scope.polylines = [{
-                      id: 1,
-                      path: "",
-                      stroke: {
-                          color: '#6060FB',
-                          weight: 4 
-                      },
-                      editable: false,
-                      draggable: false,
-                      geodesic: false,
-                      visible: $scope.visible,
-                      static: true
-                  }];
-
-     $scope.map = {
-      center: {
-        latitude: 42.324666380272916,
-        longitude: -83.60940366983414
-      },
-      zoom: 4,
-      bounds: {},
-      events: {
-        click: function(mapModel, eventName, originalEventArgs) {
-            
-              processEventData(mapModel, eventName, originalEventArgs);
-            
-             
-             }
-             
-        }
-       } // end $scope.map
-    $scope.options = {
-      scrollwheel: false
-    };
-
-
-processEventData = function(mapModel, eventName, originalEventArgs) {
-uiGmapGoogleMapApi.then(function(maps) {
-        var service = new google.maps.DirectionsService();
- 
-        var e = originalEventArgs[0];
-            //console.log(e.latLng);
-            var result = {
-                latitude: e.latLng.lat(),
-                longitude: e.latLng.lng()
-              };
-            var nextID = $scope.markers.length;
-            var singlemarker = {
-                  id: nextID,
-                  coords: result
-            
-                 };
-
-            if ($scope.pointsArray.length === 0) {
-              $scope.markers.push(singlemarker);
-              $scope.pointsArray.push(e.latLng);
-              //$scope.polyline.path = maps.geometry.encoding.encodePath($scope.pointsArray);
-            } else {
-              $scope.markers[1] = singlemarker;
-              var lastPoint = $scope.pointsArray.length - 1;
-              service.route({
-                origin: $scope.pointsArray[lastPoint],
-                destination: e.latLng,
-                travelMode: google.maps.DirectionsTravelMode.DRIVING
-              }, function(result, status) {
-                if (status == google.maps.DirectionsStatus.OK) {
-                  for (var i = 0, len = result.routes[0].overview_path.length;
-                      i < len; i++) {
-                    $scope.pointsArray.push(result.routes[0].overview_path[i]);
-                    
-                  }
-                  $scope.polylines[0].path = $scope.pointsArray;
-                  var distance_meters = math.unit(maps.geometry.spherical.computeLength($scope.polylines[0].path), 'm');
-                  $scope.newEvent.distance = math.number(distance_meters, 'mi');
-                  $scope.encodedPath = maps.geometry.encoding.encodePath($scope.pointsArray);
-                  $scope.$apply();
-                }
-                else {
-                  $scope.pointsArray.push(e.latLng);
-                  $scope.polylines[0].path=$scope.pointsArray;
-                  var distance_meters = math.unit(maps.geometry.spherical.computeLength($scope.polylines[0].path), 'm');
-                  $scope.newEvent.distance = math.number(distance_meters, 'mi');
-                  $scope.encodedPath = maps.geometry.encoding.encodePath($scope.pointsArray);
-                  $scope.$apply();
-                  // add some handling for when the status === "ZERO_RESULTS" then you simply add the new point and put the path between them
-                  // i think you just have to push the new point to the pointsArray 
-                  console.log(result);
-                  console.log(status);
-                }
-              });
-            }
-   });
-};
-
-
-createMap = function() {
-  uiGmapGoogleMapApi.then(function(maps) {
-            // nothing to do here at the moment, render the map using this function and then the user 
-            //impocts the drawing on the amp
-
-
-        //   var fromDirections = "}ktwF|`ubMp@b@iBxF}BjHmEuCaDuBgFiDaEkCuDcCwNmJwFsDwBqAkBoAg@a@}EeD_SoM~DcMNe@^iAf@^@F@DbC`BLLDL@d@IVSt@GPIJOBMCIG}@}Aq@cAWYOKIEWEY?UDYJi@\]^KRoDfHu@bB{@hCg@dBQ`AU~A_ChH_D|J_AzCc@rAwXl|@{Lv_@k@hCUrBAvABn@LnALn@FRX~@Td@Z`@Z^hAx@x@r@`BlAr@d@|B~@b@HTLt@b@hA|@ZHd@@`@Gl@Uh@g@\s@Nw@B_AGy@Ss@Wi@c@a@c@YwAk@wHoCYIqEs@}ACe@Dc@J]L[Nm@l@UXe@`AgJbXcBlFmB|Gy@dC{D`KuBrFyC|HaAxC{E`Ri@vBeB~GaCdJ{@~Ck@bBe@~@W`@[^[b@gAjA{DxDmA|@qBdA_@XkAd@cBj@}Ab@iB\{Dz@yCl@yA\mE`A}Aj@qCjAuC~AkBnA_@ZcBxAoApA{BhCoBtCwJpOo@~@YZo@hA{BpDoCfE_DbFyGbKaI`MgJ`N_HhKiE|GkL|PsAzBSBEBYT}@j@iA`@e@J_ADgCHeGJyA?u@CiBUaEkAiC}@wCoAiCsAyCkBgEaDsBeBq@m@kHgG}@y@mBaBa@_@G_@?MF]XOzEkBxD{AXKvAi@^^PVXZZlGN|DCb@Id@u@zAkApCu@fBi@tAxAdA~D`DzBnBbChB`@X";
-        //  var smallOne = "epiaGfwh}NrjC_tH";
-        //   var examplePath = maps.geometry.encoding.decodePath(fromDirections);
-        //  console.log(examplePath);
-        //   var exampleLine = {
-        //               id: 1,
-        //               path: examplePath,
-        //               stroke: {
-        //                   color: '#6060FB',
-        //                   weight: 4 
-        //               },
-        //               editable: false,
-        //               draggable: false,
-        //               geodesic: false,
-        //               visible: $scope.visible,
-        //               static: true
-        //           };
-
-        // $scope.polylines.push(exampleLine);
-    })
-};
-
-createMap();
-    
-
-
-$scope.undo = function(){
-
-};
-
-
-
-  }); // end create controller 
 
 
 
@@ -1730,6 +1520,8 @@ $scope.pushRandom = function(){
       objectDelete.remove();
   }, 5000)
 };
+
+
 
 
 

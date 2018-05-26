@@ -1,0 +1,88 @@
+app.controller('AdminCtrl', function ($scope, $q, $location, $http, $route, $timeout, $firebaseObject, $routeParams, $firebaseArray, UserService, uiGmapGoogleMapApi, CalculatorService, StravaService) {
+
+
+console.log('heres the admin challenge');
+$scope.missedActivities = [];
+$scope.athletes = [];
+$scope.fbActivities = [];
+var selectedAthlete;
+
+var eventID = "-L-s5mzXCE6iEwT0OQ0T";
+
+var ref = firebase.database().ref().child('events/' + eventID + '/athletes');
+var obj = $firebaseObject(ref);
+
+obj.$loaded().then(function() {
+
+      angular.forEach(obj, function(value, key) {
+        var athObj = {
+          athId: value.athlete.id,
+          athName: value.athlete.firstname + " " + value.athlete.lastname,
+          athFBId: key,
+          stID: value.strava_token
+        }
+          $scope.athletes.push(athObj);
+       });
+
+    }); // end obj.$loaded()
+
+
+
+$scope.loadAthlete = function (x){
+  selectedAthlete = '';
+  selectedAthlete = $scope.athletes[x];
+  $scope.fbActivities = [];
+  $scope.recents ='';
+  var arr = [];
+  var obj = {
+    strava_token: $scope.athletes[x].stID
+  }
+  arr.push(obj);
+
+  StravaService.getStravaActivities(arr).then(function(r){ 
+    $scope.recents = r[0].data;
+    pullFBActivities($scope.athletes[x].athFBId);
+
+  });
+
+};
+
+function pullFBActivities (uid){
+  var ref = firebase.database().ref().child('events/' + eventID + '/athletes/' + uid);
+  var acts = $firebaseObject(ref);
+
+acts.$loaded().then(function() {
+
+     angular.forEach(acts.activities, function(value, key) {
+  
+          $scope.fbActivities.push(value);
+     });
+
+
+
+    }); // end obj.$loaded()
+
+};
+
+$scope.upload = function(y) {
+    var fbID = selectedAthlete.athFBId;
+    console.log(fbID)
+    var newObj = firebase.database().ref().child('users/' + fbID + '/activities/').push();
+    var newActivity = {
+      athlete : $scope.recents[y].athlete,
+      distance : $scope.recents[y].distance,
+      elapsed_time : $scope.recents[y].elapsed_time,
+      id : $scope.recents[y].id,
+      map : $scope.recents[y].map,
+      moving_time: $scope.recents[y].moving_time,
+      name: $scope.recents[y].name,
+      start_date: $scope.recents[y].start_date,
+      timezone: $scope.recents[y].timezone,
+      type: $scope.recents[y].type,
+      total_elevation_gain: $scope.recents[y].total_elevation_gain
+    };
+    newObj.set(newActivity)
+    console.log(newObj.value);
+};
+
+}); // end example controller

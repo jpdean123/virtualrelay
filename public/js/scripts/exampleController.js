@@ -215,15 +215,17 @@ function processData (d) {
     tempActivity.pace = moment.utc(milisecondsPerMile).format("mm:ss");
 
     //parsing timezones on the start date
-    var str = tempActivity.timezone;
-    var split = str.split(" ")[1];
-   // console.log(split);
-    var start_moment = moment(tempActivity.start_date);
-    var a = moment.tz(start_moment, split);
-    console.log("original=.  " + start_moment.format("D MMM YYYY h:mm:ss a Z") + "  with timezone change - " + a.format("D MMM YYYY h:mm:ss a Z"));
+   var str = tempActivity.timezone;
+   var split = str.split(" ")[1];
 
-
-
+   var m = moment(tempActivity.start_date).tz(split);
+   var off = m.utcOffset();
+   m.subtract(off,'m');
+   m.tz('America/Los_Angeles');
+   tempActivity.ended_at = m.add(list[i].moving_time, 's');
+   var p = m.clone();
+   tempActivity.ended_at_pretty  = p.fromNow();
+ 
   // push single activity to DOM  
     $scope.activities.push(tempActivity);
 
@@ -535,14 +537,20 @@ function createChart (){
       var daily = i * milesPerDay;
       $scope.chartdata[0].push(parseFloat(daily.toFixed(1)));
 
-      var rangeEnd = s.clone();
+
+       var m = s.clone();
+       var off = m.utcOffset();
+       m.subtract(off,'m');
+       m.tz('America/Los_Angeles');
+
+      var rangeEnd = m.clone();
      
 
-      var rangeStart = s.clone().subtract(1, 'd');
+      var rangeStart = m.clone().subtract(1, 'd');
      
       //console.log('range start = ' + rangeStart.format('D MM YYYY') + '  and the range end is =  ' + rangeEnd.format('D MM YYYY'));
       for (var x = 0; x < $scope.activities.length; x++) {
-        var actDate = moment($scope.activities[x].start_date);
+        var actDate = moment($scope.activities[x].ended_at);
 
         if (actDate > rangeStart && actDate <= rangeEnd) {
           
@@ -555,7 +563,7 @@ function createChart (){
           cumulativeActivities = cumulativeActivities + 1;
 
             if (i == elapsedDays) {
-                  console.log('the start date - ' + rangeStart.format("D MMM YYYY") + ' end date ---- ' + rangeEnd.format("D MMM YYYY"));
+                  console.log('the start date - ' + rangeStart.format("YYYY MM DD H:mm:ss a Z") + ' end date ---- ' + rangeEnd.format("YYYY MM DD H:mm:ss a Z"));
               }
 
         } else {

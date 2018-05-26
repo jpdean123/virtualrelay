@@ -9,10 +9,18 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
+    "@google/maps": "^0.4.5",
+    "@mapbox/polyline": "^0.2.0",
+    "@turf/turf": "^5.1.6",
     "firebase-admin": "^5.8.1",
     "firebase-functions": "^0.8.1",
+    "forloop": "0.0.2",
+    "geojson-polyline": "^1.0.0",
+    "google-maps": "^3.2.1",
+    "google-polyline": "^1.0.0",
     "promise": "^8.0.1",
-    "request": "^2.83.0"
+    "request": "^2.83.0",
+    "spherical-geometry-js": "^1.0.1"
   },
   "private": true
 }

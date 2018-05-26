@@ -1,3 +1,11 @@
+.main {
+	padding: 2em;
+}
+
+.nav-link {
+	margin-right: 2em;
+}
+
 .activity-list {
 	max-height: 8em;
 	overflow: scroll;
@@ -88,3 +96,129 @@
 .map-legend-children img {
 	padding-right: .5em;
 }
+
+.dashboard {
+	display: flex;
+	justify-content: space-between;
+	
+}
+
+.dash-panel {
+	width: 30%
+}
+
+.create-event {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.event-summary {
+	width: 35%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+
+.create-step {
+	border-width: .1em;
+	border-style: solid;
+	margin-bottom: 2em;
+	padding: 1em;
+}
+
+.step-active {
+
+}
+
+.step-complete {
+	border-color: #5bcc53;
+
+}
+
+.success-icon {
+	color:#5bcc53;
+}
+
+.step-inactive {
+	border-color: #e8e9ea;
+	color: #e8e9ea;
+}
+
+.step-inactive > h4 {
+	border-color: #e8e9ea;
+	color: #e8e9ea;
+}
+
+
+.step-holder {
+	max-width: 40%;
+}
+
+
+
+/* slider CSS*/
+
+.custom-slider.rzslider .rz-bar {
+  background: #ffe4d1;
+  height: 2px;
+}
+.custom-slider.rzslider .rz-selection {
+  background: orange;
+}
+
+.custom-slider.rzslider .rz-pointer {
+  width: 8px;
+  height: 16px;
+  top: auto; /* to remove the default positioning */
+  bottom: 0;
+  background-color: #333;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.custom-slider.rzslider .rz-pointer:after {
+  display: none;
+}
+
+.custom-slider.rzslider .rz-bubble {
+  bottom: 14px;
+}
+
+.custom-slider.rzslider .rz-limit {
+  font-weight: bold;
+  color: orange;
+}
+
+.custom-slider.rzslider .rz-tick {
+  width: 1px;
+  height: 10px;
+  margin-left: 4px;
+  border-radius: 0;
+  background: #ffe4d1;
+  top: -1px;
+}
+
+.custom-slider.rzslider .rz-tick.rz-selected {
+  background: orange;
+}
+
+
+/* end slider CSS*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

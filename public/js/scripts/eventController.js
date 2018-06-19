@@ -4,18 +4,6 @@ var eventID = $routeParams.eventid;
 var fire = firebase.database();
 $scope.user = UserService.getCurrentUser();
 
-$scope.slider = {
-  min: 0,
-  max: 0,
-  options: {
-    floor: 0,
-    ceil: 0,
-    readOnly: true,
-    showTicks: true,
-    showTicksValues: true
-  },
-}
-
 var users = fire.ref('users');
 var query = users.orderByChild('owner').equalTo($scope.user.uid);
 
@@ -101,8 +89,8 @@ function initProcessing(event){
     processSummaryDistance(event.distance);
     processAthletes(event.athletes).then(function(data){
       //createMap($scope.data.path, $scope.data.distance,$scope.totalData.distance);
-      createChart();
-      processChats();
+      //createChart();
+      //processChats();
      
     });
     
@@ -131,9 +119,9 @@ function processTypes (t) {
 function processSummaryDistance (d) {
         var goalMeters = math.unit(d, 'm');    
         $scope.goalMiles = math.number(goalMeters, 'mi');
-        $scope.slider.min = $scope.data.summary.total_distance_miles;
-        $scope.slider.options.ceil = $scope.goalMiles;
-        $scope.slider.options.floor= 0;
+        // $scope.slider.min = $scope.data.summary.total_distance_miles;
+        // $scope.slider.options.ceil = $scope.goalMiles;
+        // $scope.slider.options.floor= 0;
 
     var start = moment($scope.data.start_date);
     var end = moment($scope.data.end_date);
@@ -142,10 +130,10 @@ function processSummaryDistance (d) {
     var elapsedDays = now.diff(start, "days");
     var totalDays = end.diff(start, "days");
 
-    var goalMeters_daily = ($scope.data.distance / totalDays) * elapsedDays;
-    var pacerMeters = math.unit(goalMeters_daily, 'm');
-    var pacerMiles = math.number(pacerMeters, 'mi');
-    $scope.slider.max = pacerMiles;
+    // var goalMeters_daily = ($scope.data.distance / totalDays) * elapsedDays;
+    // var pacerMeters = math.unit(goalMeters_daily, 'm');
+    // var pacerMiles = math.number(pacerMeters, 'mi');
+   //$scope.slider.max = pacerMiles;
 
 };
 

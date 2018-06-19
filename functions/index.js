@@ -10,6 +10,7 @@ var db = admin.database();
 var Promise = require('promise');
 var request = require('request');
 var forloop = require('forloop');
+var moment = require('moment');
 
 
 var googleMapsClient = require('@google/maps').createClient({
@@ -412,8 +413,9 @@ exports.updateSummaryLocations = functions.database
 	return racePath.once('value').then(s => {
 		//console.log(s.val().path);
 		var d = event.data.val().total_distance_meters;
+		var p = event.data.val().pacer_distance_meters;
 		var line = s.val().path;
-		findLocations(d, line).then(function(summaryData){
+		findLocations(d,p,line).then(function(summaryData){
 			console.log(summaryData);
 			let updateObj = {};
 			updateObj[eventPath.path + '/summary/locations'] = summaryData;
@@ -423,7 +425,7 @@ exports.updateSummaryLocations = functions.database
 		
 	});
 
-function findLocations (distance, line) {
+function findLocations (distance, pacer, line) {
 
 	var meters = distance;
 	var km = meters / 1000;
@@ -432,6 +434,9 @@ function findLocations (distance, line) {
     var p = polyline.decode(encodedLine);
     console.log(p[0]);
     var l = turf.lineString(p);
+
+    var p = pacer;
+    console.log('pacer distance is ' + p);
 
     var loc = {};
 
@@ -447,6 +452,9 @@ var mainPromise = new Promise(function (resolve, reject) {
 
 	var test = turf.along(l, 500, options);
 	loc.test = [test.geometry.coordinates[0],test.geometry.coordinates[1]];
+
+	var pacer = turf.along(l,p, {units: 'meters'});
+	loc.pacer = [pacer.geometry.coordinates[0], pacer.geometry.coordinates[1]];
 	resolve(loc);
 
    });
@@ -457,4 +465,69 @@ var mainPromise = new Promise(function (resolve, reject) {
 	};
 
 }); //end of exports.updateEvent function
+
+
+
+exports.updateDailyPacerDistance = functions.https.onRequest((request, response) => {
+ var now = moment();
+ db.ref().child('events').once('value', function(snap){
+    let eventKeys = Object.keys(snap.val());
+
+    updateEventPacers(eventKeys, now).then(function(resp){
+    	console.log(resp);
+ 		response.send(200);
+    });
+  });
+
+
+
+});
+
+//takes meters and retunrs miles
+function getMiles(i) {
+     return i*0.000621371192;
+	};
+
+
+function updateEventPacers(keys, now) {
+var processedEvents = 0;
+var promiseArray = [];
+
+	keys.forEach(x => {
+		var promise = new Promise(function (resolve, reject) {
+			processedEvents++;
+			db.ref().child('events/' + x).once('value', function(snap){ 
+				console.log(snap.val());
+				if(snap.val().summary) {
+					if(snap.val().summary.daily_meters_pace) {
+					var dailyMeters = snap.val().summary.daily_meters_pace;
+					var startDate = snap.val().start_date;
+					var mStart = moment(startDate);
+					var elapsedDays = now.diff(mStart, 'days');
+					var pacerDistance = elapsedDays * dailyMeters;
+					var pacerDistanceMiles = getMiles(pacerDistance);
+
+
+					db.ref().child('events/' + x + '/summary/pacer_distance_meters').set(pacerDistance);
+					db.ref().child('events/' + x + '/summary/pacer_distance_miles').set(pacerDistanceMiles); 
+
+				}
+			}
+			 
+			 if(processedEvents === keys.length) {
+				resolve('success');
+			 }
+
+
+			})
+
+	   });
+	promiseArray.push(promise);
+
+
+	});
+	return Promise.all(promiseArray);
+};
+
+
 

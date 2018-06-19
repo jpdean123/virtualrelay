@@ -16,9 +16,8 @@ var query = users.orderByChild('owner').equalTo($scope.user.uid);
       var user = snap.val()[k];
       if (user.strava_token) {
       	$scope.strava_token = true;
-      	$scope.activities = user.activities;
       	$scope.$apply();
-     
+        processActivities(user.activities);
       }
       init(k);
    console.log(user);
@@ -42,5 +41,36 @@ $scope.goToEvent = function (key){
 	$location.path('/event/' + key);
 };
 
+$scope.activities = [];
+
+
+function processActivities (actList){
+
+  angular.forEach(actList, function(value, key) {
+      var act = value;
+            // put distance in miles
+       var distanceMeters = math.unit(value.distance, 'm');    
+        act.distance_miles = math.number(distanceMeters, 'mi');
+
+      // get elevation gain in feet
+      var gainMeters = math.unit(value.total_elevation_gain, 'm');
+      act.elevation_gain = math.number(gainMeters, 'ft');
+
+      // make time pretty
+      act.time_pretty = moment.duration(value.elapsed_time, 'seconds').format("hh:mm:ss")
+
+      //pretty start time
+      act.start_date_pretty = moment(value.start_date).fromNow();
+
+      //get pace
+      var secondsPerMile = value.elapsed_time / act.distance_miles;
+      act.pace = moment.duration(secondsPerMile, 'seconds').format("mm:ss");
+
+      //push to scope
+      $scope.activities.push(act)
+
+  })
+
+};
 
 });

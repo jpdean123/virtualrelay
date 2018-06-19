@@ -12,10 +12,10 @@
         </div>
     </div>
     <div class="panel panel-primary dash-panel">
-        <div class="panel-heading">Recent Activity</div>
+        <div class="panel-heading">Your Recent Activities</div>
         <div class="panel-body activity-list">
-            <p ng-repeat="(key, act) in activities">
-                <a ng-href="https://www.strava.com/activities/{{act.id}}" ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()" target="_blank" tooltip-placement="top" uib-tooltip="{{act.distance_miles | number:1}} miles, {{act.elevation_gain | number:0}} ft of gain, {{act.time_pretty}}, {{act.pace}} per mile. Click to view on Strava">{{act.distance_miles | number:1 }} mile {{ act.type }} {{ act.start_date_pretty }}.</a> <span ng-show="hoverEdit" class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+            <p ng-repeat="act in activities | orderBy : 'start_date':true"">
+                <a ng-href="https://www.strava.com/activities/{{act.id}}" ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()" target="_blank" tooltip-placement="top" uib-tooltip="{{act.distance_miles | number:1}} miles, {{act.elevation_gain | number:0}} ft of gain, {{act.time_pretty}}, {{act.pace}} per mile. Click to view on Strava"><strong>{{act.name}}</strong> - {{act.distance_miles | number:1 }} mile {{ act.type }} {{ act.start_date_pretty }}.</a> <span ng-show="hoverEdit" class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
             </p>
         </div>
     </div>
@@ -28,7 +28,7 @@
            <p><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> You're Connected</p>
         </div>
     </div>
-</div>
+</div> 
 
 
 

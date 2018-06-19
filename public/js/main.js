@@ -17,7 +17,9 @@ var app = angular.module('tutorialWebApp', [
   'chart.js',
   'ui.bootstrap',
   'ui.select',
-  'rzModule'
+  'rzModule',
+  'angulartics',
+  'angulartics.google.analytics'
 ]);
 
 /**

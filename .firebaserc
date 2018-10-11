@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "virtual-relay"
+    "default": "virtual-relay",
+    "develop": "virtual-relay-develop"
   }
 }

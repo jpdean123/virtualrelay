@@ -1,0 +1,41 @@
+[debug] [2018-10-11T23:21:41.036Z] ----------------------------------------------------------------------
+[debug] [2018-10-11T23:21:41.038Z] Command:       /usr/local/bin/node /usr/local/bin/firebase serve
+[debug] [2018-10-11T23:21:41.038Z] CLI Version:   3.17.3
+[debug] [2018-10-11T23:21:41.038Z] Platform:      darwin
+[debug] [2018-10-11T23:21:41.038Z] Node Version:  v8.9.4
+[debug] [2018-10-11T23:21:41.040Z] Time:          Thu Oct 11 2018 17:21:41 GMT-0600 (MDT)
+[debug] [2018-10-11T23:21:41.040Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-10-11T23:21:41.052Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-10-11T23:21:41.052Z] > authorizing via signed-in user
+[debug] [2018-10-11T23:21:41.054Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-10-11T23:21:41.054Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ { refresh_token: '1/k3NzyRyo9xC-TrtLtXmOm9k8qHRUZKMhjgrjO9GE7bE',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Thu Oct 11 2018 17:21:41 GMT-0600 (MDT)
+[debug] [2018-10-11T23:21:41.320Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-11T23:21:41.345Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/virtual-relay  
+  
+ Thu Oct 11 2018 17:21:41 GMT-0600 (MDT)
+[debug] [2018-10-11T23:21:41.619Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-11T23:21:41.620Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/virtual-relay/tokens  
+  
+ Thu Oct 11 2018 17:21:41 GMT-0600 (MDT)
+[debug] [2018-10-11T23:21:41.831Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/Users/jack/virtualrelay'...
+[info] 
+[debug] [2018-10-11T23:21:41.834Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/virtual-relay  
+  
+ Thu Oct 11 2018 17:21:41 GMT-0600 (MDT)
+[debug] [2018-10-11T23:21:42.082Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-11T23:21:42.082Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/19522865119/clients/_:getWebAppConfig  
+  
+ Thu Oct 11 2018 17:21:42 GMT-0600 (MDT)
+[debug] [2018-10-11T23:21:42.515Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: public
+[info] ✔  hosting: Local server: http://localhost:5000
+

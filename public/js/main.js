@@ -44,7 +44,7 @@ app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvid
     .when("/signup", {templateUrl: "partials/signup.html", controller: "SignUpCtrl"})
     .when("/dashboard", {templateUrl: "partials/dashboard.html", controller: "DashCtrl"})
     .when("/token_exchange", {templateUrl: "partials/token.html", controller: "TokenCtrl"})
-    .when("/event/:eventid", {templateUrl: "partials/event.html", controller: "EventCtrl"})
+    .when("/team/:teamid", {templateUrl: "partials/team.html", controller: "TeamCtrl"})
     .when("/create", {templateUrl: "partials/create.html", controller: "CreateCtrl"})
     .when("/test", {templateUrl: "partials/test.html", controller: "TestCtrl"})
     .when("/admin", {templateUrl: "partials/admin.html", controller: "AdminCtrl"})
@@ -52,7 +52,7 @@ app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvid
     // else go to signup / login page... this app will act as the app. with a public Wordpress page to match
     // maybe we can use Bitly API to create short links to the specific events so they don't see the firebase URL
     // do that on event creation and then save it to the event for later
-    .otherwise("/signup");
+    .otherwise("/dashboard");
 
     uiGmapGoogleMapApiProvider.configure({
         key: 'AIzaSyDUEvmx4SYccJerkf5e8mUEE7zEMWfiM1M',
@@ -86,8 +86,6 @@ app.controller('BlogCtrl', function ($scope, $location, $http, $firebaseObject) 
 
 
 // });
-
-
 
 
 
@@ -138,7 +136,7 @@ app.service('UserService', function ($firebaseAuth, $location, $rootScope){
     var substring = 'event/';
     var publicCheck = pathUrl.indexOf(substring);
     if (publicCheck ==-1) {
-      $location.path('/signup');
+      //$location.path('/signup');
       $rootScope.$apply();
     }
     
@@ -206,6 +204,8 @@ app.controller("HeaderCtrl", ["$scope", "$firebaseAuth","$location", "UserServic
     $scope.user = UserService.getCurrentUser();
  
   }
+
+
 ]);
 
 

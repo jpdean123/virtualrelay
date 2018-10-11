@@ -1,0 +1,150 @@
+
+<div class="main">
+<div class="panel panel-default">
+				<div class="panel-heading">Create a New Event!</div>
+					<div class="panel-body create-event">
+						<div class="col-md-12"> 
+							<!-- Holds the left side panel -->
+							<div class="step-holder">
+								<!-- holds the steps -->
+								<div ng-show="step == 1"> 
+									<h3>Basics</h3>
+									<div class="form-group">
+										<label>Name Your Event</label>
+										<input class="form-control" placeholder="" ng-model="newEvent.title">
+									</div>
+									<div class="form-group">
+										<label>Give it a short description</label>
+										<input class="form-control" placeholder="" ng-model="newEvent.description">
+									</div>
+								
+									<div class="form-group">
+										<label>What Length Do You Want?</label>
+										<div class="radio">
+											<label>
+												<input type="radio" name="optionsRadios" id="optionsRadios1" value="3" ng-model="newEvent.days">Weekend (3 Days)
+											</label>
+										</div>
+										<div class="radio">
+											<label>
+												<input type="radio" name="optionsRadios" id="optionsRadios2" value="7" ng-model="newEvent.days">1 Week
+											</label>
+										</div>
+										<div class="radio">
+											<label>
+												<input type="radio" name="optionsRadios" id="optionsRadios3" value="30" ng-model="newEvent.days">1 Month
+											</label>
+										</div>
+										<div class="radio">
+											<label>
+												<input type="radio" name="optionsRadios" id="optionsRadios3" value="365" ng-model="newEvent.days">1 Year
+											</label>
+										</div>
+									</div>
+							</div>
+							<div ng-show="step == 2">
+								<h3>Pick a Route</h3>
+								<div class="form-group">
+									<label>Select a route from your Strava Routes</label>
+									<select ng-model="selectedRoute" ng-options="r.name for r in routesArray">
+									</select>
+								</div>
+								<div class="form-group">
+									<label>How many people will run with you?</label>
+									<i>Don't worry, you can change this later.</i>
+									<input class="form-control" placeholder="Placeholder" ng-model="newEvent.people_count">
+								</div>
+								 <div style="display:inline-block; min-height:290px;">
+								 		<label>When do you want to start the race?</label>
+								      <div uib-datepicker ng-model="newEvent.start_date" class="well well-sm" datepicker-options="options"></div>
+								   </div>
+							</div>
+
+				<!-- 	<div>
+						Distance in Map: {{newEvent.distance * 0.000621371 | number: 2}} <br>
+						Number of People: {{newEvent.people_count}} <br>
+						Miles per person per day: {{newEvent.distance * 0.000621371 / newEvent.people_count / newEvent.days | number:2 || 'Create a route and add people'}}<br>
+					</div> -->
+				<!-- 	<div>
+						<a ng-click="undo()">Undo</a>
+					</div> -->
+
+<!-- interactive google maps path maker -->
+						<!-- 	<ui-gmap-google-map center="map.center" zoom="map.zoom" events="map.events" draggable="true" options="options" bounds="map.bounds" class="map-creator">
+       							<ui-gmap-markers models="markers" coords="'coords'" icon="'icon'">
+					            </ui-gmap-markers>
+					             <ui-gmap-polyline ng-repeat="p in polylines" 
+					            path="p.path" 
+					            stroke="p.stroke" 
+					            visible='p.visible'
+					            geodesic='p.geodesic' 
+					            fit="false" 
+					            editable="p.editable" 
+					            draggable="p.draggable" 
+					            icons='p.icons'>
+					                    
+					            </ui-gmap-polyline>
+    						</ui-gmap-google-map> -->
+					
+						
+					
+								
+							
+							<div ng-show="step == 3">
+								
+								payment goes here... to come soon.
+								
+							</div>
+							<div ng-show="step == 4">
+								<pre>{{sharelink}}</pre>
+								
+							</div>
+						</div>
+						<!-- closes the step holder -->
+						<div>
+							<button class="btn btn-danger" ng-click="step = step - 1" ng-hide="step==1">Back</button>
+							<button class="btn btn-primary" ng-click="step = step + 1" ng-disabled="next_disabled">Next</button>
+						</div>
+					</div>
+					<div class="event-summary">
+						<h3>Create Event Steps</h3>
+						<div class="create-step" ng-class="eventStepClasses[0]">
+							<h4><span class="glyphicon glyphicon-ok success-icon" aria-hidden="true" ng-show="eventStepClasses[0] == 'step-complete'"></span> 1) Basic Info</h4>
+							<strong>Title:</strong> {{newEvent.title}}<br>
+							<strong>Selected Length:</strong> {{newEvent.days}} <span ng-show="newEvent.days > 0">days</span><br>
+
+						</div>
+						<div class="create-step" ng-class="eventStepClasses[1]">
+							<h4><span class="glyphicon glyphicon-ok success-icon" aria-hidden="true" ng-show="eventStepClasses[1] == 'step-complete'"></span> 2) Select a Route</h4>
+							<strong>Selected Route:</strong> {{selectedRoute.name}}<br>
+							<strong>Milage:</strong> {{newEvent.distance * 0.000621371 | number:2}}<br>
+							<strong>Estimated Participants:</strong> {{newEvent.people_count}}<br>
+							<strong>Miles / person / day:</strong> {{newEvent.distance * 0.000621371 / newEvent.people_count / newEvent.days | number:2 || 'Create a route and add people'}}
+						</div>
+						<div class="create-step" ng-class="eventStepClasses[2]">
+							<h4><span class="glyphicon glyphicon-ok success-icon" aria-hidden="true" ng-show="eventStepClasses[2] == 'step-complete'"></span> 3) Payment</h4>
+							<strong>Selected Length:</strong> {{newEvent.days}} days<br>
+							<strong>Cost:</strong> {{newEvent.cost | currency}}
+						</div>
+						<div class="create-step" ng-class="eventStepClasses[3]">
+							<h4><span class="glyphicon glyphicon-ok success-icon" aria-hidden="true" ng-show="eventStepClasses[2] == 'step-complete'"></span> 4) Get Share Link</h4>
+							After payment, you'll get a link to share with your relay teammates!
+						</div>
+					</div>
+						
+							
+						</div>
+						</div>
+					</div>
+
+				
+				</div><!-- /.panel-->
+
+			</div>
+
+
+<pre>{{ newEvent | json: 2 }}</pre>
+
+
+
+

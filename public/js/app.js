@@ -1,12 +1,4 @@
-/**
- * AngularJS Tutorial 1
- * @author Nick Kaye <nick.c.kaye@gmail.com>
- */
-
-/**
- * Main AngularJS Web Application
- */
-var app = angular.module('tutorialWebApp', [
+var app = angular.module('virtualRelayApp', [
   'firebase',
   'ngRoute',
   'ngAnimate',
@@ -22,16 +14,10 @@ var app = angular.module('tutorialWebApp', [
   'angulartics.google.analytics'
 ]);
 
-/**
- * Configure the Routes
- */
 app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvider) {
 
   $locationProvider.hashPrefix('');
   $routeProvider
-    // Home
-    // .when("/", {templateUrl: "partials/home.html", controller: "PageCtrl"})
-    // Pages
     .when("/about", {templateUrl: "partials/about.html", controller: "PageCtrl"})
     .when("/faq", {templateUrl: "partials/faq.html", controller: "PageCtrl"})
     .when("/pricing", {templateUrl: "partials/pricing.html", controller: "PageCtrl"})
@@ -41,14 +27,13 @@ app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvid
     .when("/blog", {templateUrl: "partials/blog.html", controller: "BlogCtrl"})
     .when("/blog/post", {templateUrl: "partials/blog_item.html", controller: "BlogCtrl"})
     // virtual relay stuff
-    .when("/signup", {templateUrl: "partials/signup.html", controller: "SignUpCtrl"})
-    .when("/dashboard", {templateUrl: "partials/dashboard.html", controller: "DashCtrl"})
-    .when("/token_exchange", {templateUrl: "partials/token.html", controller: "TokenCtrl"})
-    .when("/team/:teamid", {templateUrl: "partials/team.html", controller: "TeamCtrl"})
-    .when("/create", {templateUrl: "partials/create.html", controller: "CreateCtrl"})
-    .when("/test", {templateUrl: "partials/test.html", controller: "TestCtrl"})
-    .when("/admin", {templateUrl: "partials/admin.html", controller: "AdminCtrl"})
-    .when("/example/:eventid", {templateUrl: "partials/example.html", controller: "ExampleCtrl"})
+    .when("/signup", {templateUrl: "../partials/signup.html", controller: "SignUpCtrl"})
+    .when("/dashboard", {templateUrl: "../partials/dashboard.html", controller: "DashCtrl"})
+    .when("/token_exchange", {templateUrl: "../partials/token.html", controller: "TokenCtrl"})
+    .when("/team/:teamid", {templateUrl: "../partials/team.html", controller: "TeamCtrl"})
+    .when("/create", {templateUrl: "../partials/create.html", controller: "CreateCtrl"})
+    .when("/admin", {templateUrl: "../partials/admin.html", controller: "AdminCtrl"})
+    .when("/example/:eventid", {templateUrl: "../partials/example.html", controller: "ExampleCtrl"})
     // else go to signup / login page... this app will act as the app. with a public Wordpress page to match
     // maybe we can use Bitly API to create short links to the specific events so they don't see the firebase URL
     // do that on event creation and then save it to the event for later
@@ -69,24 +54,6 @@ app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvid
 app.controller('BlogCtrl', function ($scope, $location, $http, $firebaseObject) {
   console.log("Blog Controller reporting for duty.");
 });
-
-
-/**
- * Controls the Footer
- */
-// app.controller('FooterCtrl', function ($scope, $location, $http) {
-  
-//  // firebase.auth().onAuthStateChanged(function(user) {
-//  //      if (user) {
-//  //         console.log(user.uid);
-//  //      } else {
-//  //       console.log('no user');
-//  //      }
-//  //      });
-
-
-// });
-
 
 
 app.controller("FooterCtrl", ["$scope", "$firebaseAuth",

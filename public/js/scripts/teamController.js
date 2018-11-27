@@ -32,7 +32,7 @@ var obj = $firebaseObject(ref);
 
      // For three-way data bindings, bind it to the scope instead
      obj.$bindTo($scope, "data");
-
+     console.log(obj);
      $scope.$watch('data', function() {
      // console.log('watch saw a change');
         initProcessing(obj);

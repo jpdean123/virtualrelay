@@ -1,0 +1,19 @@
+<div class="page-wrap">
+	<div class="row flex flex-row flex-wrap-true flex-justify-center">
+	<div class="panel mb20 panel-default ng-scope" style="max-width: 30%; margin: 1em;" ng-repeat="(key, race) in races">
+	    <div class="panel-heading"> <a ng-click="goToEvent(key)" class="ng-binding">{{race.title}}</a>
+	    </div>
+	    <div class="panel-body">
+	        <p>
+				<strong>Registered Teams:</strong> {{race.registered_teams}} out of {{race.max_teams}}<br>
+				<strong>Athletes / Team:</strong> {{race.max_athletes_team}}<br>
+				<strong>Distance:</strong> {{race.distance}}<br>
+			</p>
+	    </div>
+	    <button type="button" class="btn btn-primary btn-block waves-effect" ng-click="goToRace(key)">View & Register</button>
+	</div>
+</div>				
+
+</div>
+
+

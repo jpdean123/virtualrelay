@@ -1,9 +1,45 @@
-<h3>Create a Team</h3>
+<div class="page-wrap">
 
 
-<input type="" name="" ng-model="team_name">
-<button class="btn btn-success">Create a new team</button>
+<div class="panel panel-default panel-hovered panel-stacked mb30">
+<div class="panel-heading">Create a Race</div>
+<div class="panel-body">
+	<form role="form">
+		<div class="form-group">
+			<label class="control-label small">Race Title</label>
+			<input type="text" class="form-control" placeholder="Awesome Race 4" ng-model="newRace.title">
+		</div>
+		<div class="form-group">
+			<label class="control-label small">Race Start Day</label>
+			<input type="text" class="form-control" placeholder="MM/DD/YYYY" ng-model="newRace.start_date">
+		</div>
+		<div class="form-group">
+			<label class="control-label small">Race End Day</label>
+			<input type="text" class="form-control" placeholder="MM/DD/YYYY" ng-model="newRace.end_date">
+		</div>
+		<div class="input-group">
+			<label class="control-label small">Max Teams</label>
+			<input type="number" class="form-control" placeholder="Number of Teams" ng-model="newRace.teams">
+		</div>
+		<div class="input-group">
+			<label class="control-label small">Athletes per Team</label>
+			<input type="number" class="form-control" placeholder="Number of Athletes per Team" ng-model="newRace.athletes">
+		</div>
+		<div class="ui-checkbox">
+			<label>
+				<input type="checkbox" ng-model="newRace.private"> 
+				<span>Private / Custom Race</span>
+			</label>
+		</div>
 
+		 <button type="button" class="btn btn-primary btn-block waves-effect" ng-click="createRace()">Create Race {{newRace.title}}</button>
+	</form>
+</div>
+</div>
+
+{{newRace.private}}
+</div> 
+<!-- end page wrap -->
 
 
 <!-- <div style="display: flex; justify-content: space-between;">

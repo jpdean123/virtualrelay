@@ -35,10 +35,22 @@ function init(k){
 	    $scope.$apply();
 	  });
 
+    var userTeamsRef = firebase.database().ref("user_teams/" + k);
+  userTeamsRef.once("value")
+    .then(function(snapshot) {
+      $scope.teams = snapshot.val();
+      console.log(snapshot.val());
+      $scope.$apply();
+    });
+
 };
 
 $scope.goToEvent = function (key){
 	$location.path('/event/' + key);
+};
+
+$scope.goToTeam = function (key){
+  $location.path('/team/' + key);
 };
 
 $scope.activities = [];

@@ -1,14 +1,84 @@
 app.controller('AdminCtrl', function ($scope, $q, $location, $http, $route, $timeout, $firebaseObject, $routeParams, $firebaseArray, UserService, uiGmapGoogleMapApi, CalculatorService, StravaService) {
 
+var fire = firebase.database();
+
 
 console.log('hello from admin controller');
 
+$scope.newRace = {};
+$scope.newRace.private = false;
 
-    var newObj = firebase.database().ref().child('user_teams' + "/" + "-L26iGEPksIZrtbcSwnT" + "/" + "-LOQeSY79oqrWou31ieq")
-    var newTeam = {
-       team_name: "Beta Team"
-    };
-    newObj.set(newTeam)
+$scope.createRace = function () {
+
+   var start_formatted = getFormattedDates($scope.newRace.start_date, true);
+   var end_formatted = getFormattedDates($scope.newRace.end_date, false);
+
+   console.log(start_formatted);
+   console.log(end_formatted);
+
+   var obj = {
+    start_date : start_formatted,
+    end_date : end_formatted,
+    title: $scope.newRace.title,
+    status: "registration-open",
+    max_teams: $scope.newRace.teams,
+    max_athletes_team: $scope.newRace.athletes,
+    private: $scope.newRace.private
+   };
+
+   console.log(obj);
+    var newObj = fire.ref().child('races').push();
+
+  newObj.set(obj);
+};
+
+function getFormattedDates (dayString, start){
+     var x = dayString;
+     if (start) {
+        var y = moment(x).startOf('month');
+    } else {
+        var y = moment(x).endOf('month');
+    }
+    y.tz('America/Los_Angeles');
+    y.utc();
+    
+    return y.format();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// previous code below: 
+
+    // var newObj = firebase.database().ref().child('user_teams' + "/" + "-L26iGEPksIZrtbcSwnT" + "/" + "-LOQeSY79oqrWou31ieq")
+    // var newTeam = {
+    //    team_name: "Beta Team"
+    // };
+    // newObj.set(newTeam)
+
+
+
 
     // var newObj = firebase.database().ref().child('teams' + "/" + "-LOQeSY79oqrWou31ieq" + "/" + "athletes" + "/" + "-L26iGEPksIZrtbcSwnT")
     // var newTeam = {

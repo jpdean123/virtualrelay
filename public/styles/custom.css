@@ -2,3 +2,24 @@
   margin-left: 100px !important;
   padding-top: 2em;
 }
+
+
+.flex {
+	display: flex
+}
+
+.flex-row {
+	flex-direction: row
+}
+
+.flex-wrap-true {
+	flex-wrap: wrap;
+}
+
+.flex-justify-center {
+	justify-content: center
+}
+
+.flex-justify-around {
+	justify-content: space-around;
+}

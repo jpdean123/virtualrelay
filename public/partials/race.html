@@ -1,0 +1,118 @@
+<div class="page-wrap">
+
+        <div class="row">
+            <!-- dashboard header -->
+            <div class="col-md-12">
+                <div class="dash-head clearfix mt15 mb20">
+                    <div class="left">
+                        <h4 class="mb5 text-light">{{race.title}}</h4>
+                    </div>
+                    <!-- <div class="right mt10">
+                        <img ng-src="{{race.team_profile_picture}}" alt="Description" />
+                    </div> -->
+                </div>
+            </div>
+        </div> <!-- #end row -->
+
+        <!-- mini boxes -->
+        <div class="row">
+            <div class="col-md-3 col-sm-6">
+                <div class="panel panel-default mb20 mini-box panel-hovered">
+                    <div class="panel-body">
+                        <div class="clearfix">
+                            <div class="info left">
+                                <h4 class="mt0 text-primary text-bold">{{ race.max_athletes_team | number:0 }}</h4>
+                                <h5 class="text-light mb0">Athletes per Team</h5>
+                            </div>
+                            <div class="right ion ion-person-stalker icon"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="panel panel-default mb20 mini-box panel-hovered">
+                    <div class="panel-body">
+                        <div class="clearfix">
+                            <div class="info left">
+                                <h4 class="mt0 text-success text-bold">{{ race.distance| number:0}}</h4>
+                                <h5 class="text-light mb0">Race Distance</h5>
+                            </div>
+                            <div class="right ion ion-map icon"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="panel panel-default mb20 mini-box panel-hovered">
+                    <div class="panel-body">
+                        <div class="clearfix">
+                            <div class="info left">
+                                <h4 class="mt0 text-info text-bold">{{ race.max_teams - race.registered_teams | number:0 }}</h4>
+                                <h5 class="text-light mb0">Team Spots Remaining</h5>
+                            </div>
+                            <div class="right ion ion-speedometer icon"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+ <!--            <div class="col-md-3 col-sm-6">
+                <div class="panel panel-default mb20 mini-box panel-hovered">
+                    <div class="panel-body">
+                        <div class="clearfix">
+                            <div class="info left">
+                                <h4 class="mt0 text-pink text-bold">{{ data.summary.total_time_seconds | number: 0}}</h4>
+                                <h5 class="text-light mb0">Total Time (sec)</h5>
+                            </div>
+                            <div class="right ion ion-clock icon"></div>
+                        </div>
+                    </div>
+                
+                </div>
+            </div> -->
+            <!-- #end mini boxes -->
+        </div> <!-- #end row -->
+
+   <div class="row">
+       <div class="col-md-7 col-sm-12">
+            <div class="panel panel-default panel-hovered panel-stacked mb20">
+                <div class="panel-heading">Map will go here</div>
+                <div class="panel-body" style="height: 25em;">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 col-sm-12" ng-show="showRegister">
+            <div class="panel panel-default panel-hovered panel-stacked mb20">
+                <div class="panel-heading">Register for Free</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Create a Team Name</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" ng-model="reg.team_name" placeholder="The Awesome Runners">
+                        </div>
+
+                    </div>
+
+                </div>
+                 <button type="button" class="btn btn-primary btn-block waves-effect" ng-click="register()">Create Team & Register</button>
+            </div>
+        </div>
+        <div class="col-md-5 col-sm-12" ng-hide="showRegister">
+            <div class="panel panel-default panel-hovered panel-stacked mb20">
+                <div class="panel-heading">{{reg.team_name}} is Registered!</div>
+                <div class="panel-body">
+                    <p>Share this link with teammates for them to signup!</p>
+                    <pre>{{shareLink}}</pre>
+
+                    <p><small><i>(we've also sent this link to your email)</i></small><p>
+
+                </div>
+                <button type="button" class="btn btn-primary btn-block waves-effect" ng-click="goToTeam(teamKey)">View Your Team Page</button>
+            </div>
+        </div>
+   </div>
+
+
+    </div> <!-- #end page-wrap -->

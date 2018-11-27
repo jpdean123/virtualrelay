@@ -48,6 +48,8 @@ app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvid
     .when("/create", {templateUrl: "partials/create.html", controller: "CreateCtrl"})
     .when("/test", {templateUrl: "partials/test.html", controller: "TestCtrl"})
     .when("/admin", {templateUrl: "partials/admin.html", controller: "AdminCtrl"})
+    .when("/search", {templateUrl: "partials/search.html", controller: "SearchCtrl"})
+    .when("/race/:raceid", {templateUrl: "partials/race.html", controller: "RaceCtrl"})
     .when("/example/:eventid", {templateUrl: "partials/example.html", controller: "ExampleCtrl"})
     // else go to signup / login page... this app will act as the app. with a public Wordpress page to match
     // maybe we can use Bitly API to create short links to the specific events so they don't see the firebase URL

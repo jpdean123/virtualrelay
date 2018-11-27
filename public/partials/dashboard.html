@@ -1,16 +1,34 @@
 <div class="page-wrap">
                     <!-- row -->
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="panel mb20 panel-default" ng-repeat="(key, event) in events">
+                    <h3>Your Races</h3>
+                    <div class="row flex flex-row flex-wrap-true flex-justify-center">
+                        
+                       
+                            <div class="panel mb20 panel-default" style="max-width: 30%" ng-repeat="(key, event) in events">
                                 <div class="panel-heading"> <a ng-click="goToEvent(key)">{{event.title}}</a>
-</div>
+                                </div>
                                 <div class="panel-body">
                                     Panel comes in various formats. You can create different panels just by dropping bootstrap <code>panel-*</code> classes.
                                     Additionally you can give panel hovered box shadow and stacked paper style by adding <code>panel-hovered</code> and <code>panel-stacked</code>.
                                 </div>
+                                <button type="button" class="btn btn-primary btn-block waves-effect" ng-click="goToTeam(key)">Go to <strong>{{event.title}}</strong> Page</button>
                             </div>
-                        </div>
+                     
+                    </div> <!-- #end row -->
+
+                     <!-- row -->
+                     <h3>Your Teams</h3>
+                    <div class="row flex flex-row flex-wrap-true flex-justify-center">
+                        
+                            <div class="panel mb20 panel-default" style="max-width: 30%" ng-repeat="(key, team) in teams">
+                                <div class="panel-heading"> <a ng-click="goToTeam(key)">{{team.team_name}}</a>
+                                </div>
+                                <div class="panel-body">
+                                    Panel comes in various formats. You can create different panels just by dropping bootstrap <code>panel-*</code> classes.
+                                    Additionally you can give panel hovered box shadow and stacked paper style by adding <code>panel-hovered</code> and <code>panel-stacked</code>.
+                                </div>
+                                <button type="button" class="btn btn-primary btn-block waves-effect" ng-click="goToTeam(key)">Go to <strong>{{team.team_name}}</strong> Page</button>
+                            </div>
                     </div> <!-- #end row -->
 </div>
 

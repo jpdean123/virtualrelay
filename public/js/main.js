@@ -44,15 +44,15 @@ app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvid
     .when("/signup", {templateUrl: "partials/signup.html", controller: "SignUpCtrl"})
     .when("/dashboard", {templateUrl: "partials/dashboard.html", controller: "DashCtrl"})
     .when("/token_exchange", {templateUrl: "partials/token.html", controller: "TokenCtrl"})
-    .when("/event/:eventid", {templateUrl: "partials/event.html", controller: "EventCtrl"})
+    .when("/team/:teamid", {templateUrl: "partials/team.html", controller: "TeamCtrl"})
     .when("/create", {templateUrl: "partials/create.html", controller: "CreateCtrl"})
-    .when("/test", {templateUrl: "partials/test.html", controller: "TestCtrl"})
+    .when("/test", {templateUrl: "partials/test.html"})
     .when("/admin", {templateUrl: "partials/admin.html", controller: "AdminCtrl"})
     .when("/example/:eventid", {templateUrl: "partials/example.html", controller: "ExampleCtrl"})
     // else go to signup / login page... this app will act as the app. with a public Wordpress page to match
     // maybe we can use Bitly API to create short links to the specific events so they don't see the firebase URL
     // do that on event creation and then save it to the event for later
-    .otherwise("/signup");
+    .otherwise("/dashboard");
 
     uiGmapGoogleMapApiProvider.configure({
         key: 'AIzaSyDUEvmx4SYccJerkf5e8mUEE7zEMWfiM1M',
@@ -68,6 +68,61 @@ app.config(function ($locationProvider, $routeProvider, uiGmapGoogleMapApiProvid
  */
 app.controller('BlogCtrl', function ($scope, $location, $http, $firebaseObject) {
   console.log("Blog Controller reporting for duty.");
+});
+
+app.controller('tableDemoCtrl', function ($scope, $location, $http, $firebaseObject) {
+  $scope.teams = [
+    {
+      name: "Cirque Du Sore Legs",
+      distance: 119.4,
+      elevation: 2045
+    },
+    {
+      name: "Scrambled Legs",
+      distance: 114.1,
+      elevation: 2678
+    },
+    {
+      name: "Achilles Heals",
+      distance: 114.0,
+      elevation: 1945
+    },
+    {
+      name: "The Joggernauts",
+      distance: 98.6,
+      elevation: 1671
+    },
+    {
+      name: "Legs Miserables",
+      distance: 74.8,
+      elevation: 1581
+    },
+    {
+      name: "Long Distance Relay-tionship",
+      distance: 61.3,
+      elevation: 1292
+    },
+    {
+      name: "A Running Joke",
+      distance: 60.2,
+      elevation: 1418
+    },
+    {
+      name: "We’d Rather Be Streaking",
+      distance: 58.7,
+      elevation: 963
+    },
+    {
+      name: "Rest Day Repeaters",
+      distance: 55.2,
+      elevation: 878
+    },
+    {
+      name: "Ignorance is Blisters",
+      distance: 55.0,
+      elevation: 914
+    }
+  ]
 });
 
 
@@ -86,8 +141,6 @@ app.controller('BlogCtrl', function ($scope, $location, $http, $firebaseObject) 
 
 
 // });
-
-
 
 
 
@@ -138,7 +191,7 @@ app.service('UserService', function ($firebaseAuth, $location, $rootScope){
     var substring = 'event/';
     var publicCheck = pathUrl.indexOf(substring);
     if (publicCheck ==-1) {
-      $location.path('/signup');
+      //$location.path('/signup');
       $rootScope.$apply();
     }
     
@@ -206,6 +259,8 @@ app.controller("HeaderCtrl", ["$scope", "$firebaseAuth","$location", "UserServic
     $scope.user = UserService.getCurrentUser();
  
   }
+
+
 ]);
 
 

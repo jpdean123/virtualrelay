@@ -1,41 +1,62 @@
-<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">			
-		<div class="row">
-			<ol class="breadcrumb">
-				<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-				<li class="active">Icons</li>
-			</ol>
-		</div><!--/.row-->
-		
-		
-<!-- <h2>User Events List</h2> -->
-<!-- <pre>{{userEventsList| json}}</pre> -->
+<!-- <div class="panel panel-default mb20 panel-hovered project-stats table-responsive" style="margin-left: 8em; margin-top: 2em; margin-right: 2em;" ng-controller="tableDemoCtrl">
+								<div class="panel-heading">Race Leaderboard</div>
+								<div class="panel-body">	
+									<table class="table">
+										<thead>
+											<tr>
+												<th class="col-sm-1 text-center">Place</th>
+												<th class="col-sm-3 text-center">Team Name</th>
+												<th class="col-sm-2 text-center">Distance Run (mi)</th>
+												<th class="col-sm-2 text-center">Elevation Gain (ft)</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="t in teams" ng-class="{'active': $index == 3}">
+												<td class="text-center">{{$index + 1}}</td>
+												<td class="text-center">{{t.name}}</td>
+												<td class="text-center">
+													{{t.distance | number: 2}}
+												</td>
+												<td class="text-center">{{t.elevation | number: 0}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div> -->
 
-
-
-
-
-
-
-
-
-
-<!-- 
-<input type="" name="" ng-model="stravaUserId">
-<button ng-click="findUser()">Find the User</button>
-<button ng-click="eventsList()">Add to Events List</button>
-<button ng-click="deleteActivities()">Delete Activities</button>
-<button ng-click="uploadActivities()">Upload Activities</button>
-<button ng-click="pushRandom()">Push / Delete Randoms</button>
-
-
-
-<pre>{{ userData | json }}</pre>
-
-<h2>Detailed ctivity list:</h2>
-<pre>{{detailedActivityList | json }}</pre> -->
-
-
-<button ng-click="activityList()">Pull User</button>
-<input type="" name="" ng-model="stravaToken">
-
-<pre>{{ foundActivity | json }}</pre>
+<div class="panel panel-default mb20 panel-hovered profile-widget" style="margin-left: 8em; margin-top: 2em; margin-right: 2em;" ng-controller="tableDemoCtrl">
+								<div class="panel-body">
+									<div class="clearfix mb15 top-info">
+										<div class="left-side">
+											<h3 class="text-light mt0">Los Angeles to San Francisco</h3>
+											<p><strong>Miles:&nbsp;</strong>469</p>
+											<p><strong>Start Date:&nbsp;</strong>January 1st, 2019</p>
+											<p><strong>Team Size:&nbsp;</strong>10 Runners</p>
+											<p><strong>Registration Cost:&nbsp;</strong>FREE</p>
+										</div>
+										<div class="right-side">
+											<img src="images/admin.jpg" alt="user">
+											<div class="rating text-warning">
+												<span><div class="rating-symbol" style="display: inline-block; position: relative;"><div class="rating-symbol-background fa fa-star-o" style="visibility: hidden;"></div><div class="rating-symbol-foreground" style="display: inline-block; position: absolute; overflow: hidden; left: 0px; width: auto;"><span class="fa fa-star"></span></div></div><div class="rating-symbol" style="display: inline-block; position: relative;"><div class="rating-symbol-background fa fa-star-o" style="visibility: hidden;"></div><div class="rating-symbol-foreground" style="display: inline-block; position: absolute; overflow: hidden; left: 0px; width: auto;"><span class="fa fa-star"></span></div></div><div class="rating-symbol" style="display: inline-block; position: relative;"><div class="rating-symbol-background fa fa-star-o" style="visibility: hidden;"></div><div class="rating-symbol-foreground" style="display: inline-block; position: absolute; overflow: hidden; left: 0px; width: auto;"><span class="fa fa-star"></span></div></div><div class="rating-symbol" style="display: inline-block; position: relative;"><div class="rating-symbol-background fa fa-star-o" style="visibility: hidden;"></div><div class="rating-symbol-foreground" style="display: inline-block; position: absolute; overflow: hidden; left: 0px; width: auto;"><span class="fa fa-star"></span></div></div><div class="rating-symbol" style="display: inline-block; position: relative;"><div class="rating-symbol-background fa fa-star-o" style="visibility: visible;"></div><div class="rating-symbol-foreground" style="display: inline-block; position: absolute; overflow: hidden; left: 0px; width: 0%;"><span></span></div></div></span><input type="hidden" class="rating-control" value="4" data-filled="fa fa-star" data-empty="fa fa-star-o">
+											</div>
+										</div>
+									</div>
+									<ul class="user-badges list-unstyled row">
+										<li class="col-xs-4">
+											<i class="ion ion-ios-chatboxes-outline text-success"></i>
+											<strong>192</strong>
+											<button class="btn btn-success btn-xs mt15 waves-effect">View</button>
+										</li>
+										<li class="col-xs-4">
+											<i class="ion ion-ios-heart-outline text-primary"></i>
+											<strong>5K+</strong>
+											<button class="btn btn-info btn-xs mt15 waves-effect">Follow</button>
+										</li>
+										<li class="col-xs-4">
+											<i class="ion ion-ios-body text-danger"></i>
+											<strong>32</strong>
+											<button class="btn btn-primary btn-xs mt15 waves-effect">Profile</button>
+										</li>
+									</ul>
+								</div> <!-- #end panel-body -->
+							</div>

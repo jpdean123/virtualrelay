@@ -1,0 +1,152 @@
+<div class="page-wrap">
+
+        <div class="row">
+            <!-- dashboard header -->
+            <div class="col-md-12">
+                <div class="dash-head clearfix mt15 mb20">
+                    <div class="left">
+                        <h4 class="mb5 text-light">{{data.name}}</h4>
+                        <p class="small">{{data.description}}</p>
+                    </div>
+                    <div class="right mt10">
+                        <img ng-src="{{data.team_profile_picture}}" alt="Description" />
+                    </div>
+                </div>
+            </div>
+        </div> <!-- #end row -->
+
+        <!-- mini boxes -->
+        <div class="row">
+            <div class="col-md-3 col-sm-6">
+                <div class="panel panel-default mb20 mini-box panel-hovered">
+                    <div class="panel-body">
+                        <div class="clearfix">
+                            <div class="info left">
+                                <h4 class="mt0 text-primary text-bold">{{ data.summary.total_athletes | number:0 }}</h4>
+                                <h5 class="text-light mb0">Athletes</h5>
+                            </div>
+                            <div class="right ion ion-person-stalker icon"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="panel panel-default mb20 mini-box panel-hovered">
+                    <div class="panel-body">
+                        <div class="clearfix">
+                            <div class="info left">
+                                <h4 class="mt0 text-success text-bold">{{ data.summary.total_distance_miles | number:0}}</h4>
+                                <h5 class="text-light mb0">Miles Run</h5>
+                            </div>
+                            <div class="right ion ion-map icon"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="panel panel-default mb20 mini-box panel-hovered">
+                    <div class="panel-body">
+                        <div class="clearfix">
+                            <div class="info left">
+                                <h4 class="mt0 text-info text-bold">{{ data.summary.total_elevation_gain_feet | number:0 }}</h4>
+                                <h5 class="text-light mb0">Feet Gained</h5>
+                            </div>
+                            <div class="right ion ion-speedometer icon"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="panel panel-default mb20 mini-box panel-hovered">
+                    <div class="panel-body">
+                        <div class="clearfix">
+                            <div class="info left">
+                                <h4 class="mt0 text-pink text-bold">{{ data.summary.total_time_seconds | number: 0}}</h4>
+                                <h5 class="text-light mb0">Total Time (sec)</h5>
+                            </div>
+                            <div class="right ion ion-clock icon"></div>
+                        </div>
+                    </div>
+                
+                </div>
+            </div>
+            <!-- #end mini boxes -->
+        </div> <!-- #end row -->
+
+    <div class="row">
+        <div class="col-md-12">
+                <div class="panel panel-lined table-responsive panel-hovered mb20">
+                    <div class="panel-heading">Data Table</div>
+                    <div class="panel-body">
+                    </div>
+                    <!-- data table -->
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Athlete Name
+                                    <div class="th">
+                                        <i class="fa fa-caret-up icon-up"
+                                            ng-click=" order('engine') "
+                                            ng-class="{active: row == 'engine'}"></i>
+                                        <i class="fa fa-caret-down icon-down"
+                                            ng-click=" order('-engine') "
+                                            ng-class="{active: row == '-engine'}"></i>
+                                    </div>
+                                </th>
+                                <th>
+                                    Total Distance
+                                    <div class="th">
+                                        <i class="fa fa-caret-up icon-up"
+                                            ng-click=" order('browser') "
+                                            ng-class="{active: row == 'browser'}"></i>
+                                        <i class="fa fa-caret-down icon-down"
+                                            ng-click=" order('-browser') "
+                                            ng-class="{active: row == '-browser'}"></i>
+                                    </div>
+                                </th>
+                                <th>
+                                    Elevation Gain
+                                    <div class="th">
+                                        <i class="fa fa-caret-up icon-up"
+                                            ng-click=" order('platform') "
+                                            ng-class="{active: row == 'platform'}"></i>
+                                        <i class="fa fa-caret-down icon-down"
+                                            ng-click=" order('-platform') "
+                                            ng-class="{active: row == '-platform'}"></i>
+                                    </div>
+                                </th>
+                                <th>
+                                    Total Time
+                                    <div class="th">
+                                        <i class="fa fa-caret-up icon-up"
+                                            ng-click=" order('version') "
+                                            ng-class="{active: row == 'version'}"></i>
+                                        <i class="fa fa-caret-down icon-down"
+                                            ng-click=" order('-version') "
+                                            ng-class="{active: row == '-version'}"></i>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="ath in data.athletes track by $index">
+                                <td>{{ath.athlete.firstname}} {{ ath.athlete.lastname }}</td>
+                                <td>{{ath.summary.total_distance_miles | number: 2}}</td>
+                                <td>{{ath.summary.total_elevation_gain_feet | number: 0}}</td>
+                                <td>{{ath.summary.total_time_seconds | number: 0}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                        <!-- #end data table -->    
+                </div>
+            </div>
+            
+        </div>
+        <!-- #end row -->
+
+
+    </div> <!-- #end page-wrap -->
